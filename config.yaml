@@ -1,0 +1,35 @@
+easy_api_prom_sms_alert:
+  simulation: true
+  auth:
+    enabled: true
+    username: test
+    password: test
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: false
+      basic: 
+        username: 'xx' 
+        password: 'xxxxxxxxx'
+      authorization: 
+        type: 'Bearer'
+        credential: 'xxxxxxxx'
+    fields: 
+      from: "from"
+      from_value: "+1234567890"
+      to: "to"
+      message: "content"
+    timeout: 0s
+  recipients: 
+  - name: "administration"
+    members:
+    - name: "Alice"
+      phone_number: "+1234567890"
+    - name: "Bob"
+      phone_number: "+0987654321"
+  - name: "urgence"
+    members:
+    - name: "Charlie"
+      phone_number: "+1122334455"
+    - name: "David"
+      phone_number: "+5544332211"
