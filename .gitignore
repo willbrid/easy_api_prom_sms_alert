@@ -1,0 +1,17 @@
+# Binary and executable files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build Directory
+/bin/
+/build/
+
+# Index files and log files
+.idea/
+.vscode/
+*.log
+
+# Fichiers de dépendance
+/vendor/
