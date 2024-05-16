@@ -67,7 +67,7 @@ type Config struct {
 }
 
 // SetConfigDefaults sets defaults configurations values
-func SetConfigDefaults(v *viper.Viper) {
+func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.simulation", true)
 	v.SetDefault("easy_api_prom_sms_alert.auth.enabled", false)
 	v.SetDefault("easy_api_prom_sms_alert.auth.username", "")
@@ -103,10 +103,10 @@ func LoadConfig(filename string, validate *validator.Validate) (*Config, error) 
 	}
 
 	// Set defaut configuration
-	SetConfigDefaults(viper.GetViper())
+	setConfigDefaults(viper.GetViper())
 
 	// Validate configuration file
-	if err := ValidateConfig(viper.GetViper(), validate); err != nil {
+	if err := validateConfig(viper.GetViper(), validate); err != nil {
 		logging.Log(logging.Error, err.Error())
 		return nil, err
 	}
@@ -118,5 +118,6 @@ func LoadConfig(filename string, validate *validator.Validate) (*Config, error) 
 		return nil, err
 	}
 
+	logging.Log(logging.Info, "no configuration errors were detected")
 	return &config, nil
 }
