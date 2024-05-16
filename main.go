@@ -20,7 +20,7 @@ func main() {
 	validate = validator.New(validator.WithRequiredStructEnabled())
 	_, err := config.LoadConfig(configFile, validate)
 	if err != nil {
-		logging.Log(logging.Error, "Error loading configuration")
+		logging.Log(logging.Error, "error loading configuration")
 		return
 	}
 
