@@ -80,6 +80,24 @@ func validateProviderConfig(v *viper.Viper, validate *validator.Validate) error 
 		v.Set("easy_api_prom_sms_alert.provider.authentication.authorization.credential", "")
 	}
 
+	// validate provider fields config
+	providerFieldsFrom := v.GetString("easy_api_prom_sms_alert.provider.fields.from")
+	providerFieldsFromValue := v.GetString("easy_api_prom_sms_alert.provider.fields.from_value")
+	providerFieldsTo := v.GetString("easy_api_prom_sms_alert.provider.fields.to")
+	providerFieldsMessage := v.GetString("easy_api_prom_sms_alert.provider.fields.message")
+	if err := validate.Var(providerFieldsFrom, "required,max=25"); err != nil {
+		return fmt.Errorf("the field provider.fields.from is required and must be a string at most 25 characters long")
+	}
+	if err := validate.Var(providerFieldsFromValue, "required,max=25"); err != nil {
+		return fmt.Errorf("the field provider.fields.from_value is required and must be a string at most 25 characters long")
+	}
+	if err := validate.Var(providerFieldsTo, "required,max=25"); err != nil {
+		return fmt.Errorf("the field provider.fields.to is required and must be a string at most 25 characters long")
+	}
+	if err := validate.Var(providerFieldsMessage, "required,max=25"); err != nil {
+		return fmt.Errorf("the field provider.fields.message is required and must be a string at most 25 characters long")
+	}
+
 	return nil
 }
 
