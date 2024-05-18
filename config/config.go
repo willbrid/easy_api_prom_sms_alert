@@ -118,6 +118,5 @@ func LoadConfig(filename string, validate *validator.Validate) (*Config, error) 
 		return nil, err
 	}
 
-	logging.Log(logging.Info, "no configuration errors were detected")
 	return &config, nil
 }
