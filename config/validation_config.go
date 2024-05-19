@@ -139,8 +139,8 @@ func validateRecipientsConfig(v *viper.Viper, validate *validator.Validate) erro
 			if err := validate.Var(memberMap["name"], "required,max=25"); err != nil {
 				return fmt.Errorf("the field recipients[].members[].name is required and must be a string at most 25 characters long")
 			}
-			if err := validate.Var(memberMap["phone_number"], "required,max=25"); err != nil {
-				return fmt.Errorf("the field recipients[].members[].phone_number is required and must be a string at most 25 characters long")
+			if err := validate.Var(memberMap["phone"], "required,max=25"); err != nil {
+				return fmt.Errorf("the field recipients[].members[].phone is required and must be a string at most 25 characters long")
 			}
 		}
 	}
