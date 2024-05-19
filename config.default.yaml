@@ -24,12 +24,12 @@ easy_api_prom_sms_alert:
   - name: "administration"
     members:
     - name: "Alice"
-      phone_number: "+1234567890"
+      phone: "+1234567890"
     - name: "Bob"
-      phone_number: "+0987654321"
+      phone: "+0987654321"
   - name: "urgence"
     members:
     - name: "Charlie"
-      phone_number: "+1122334455"
+      phone: "+1122334455"
     - name: "David"
-      phone_number: "+5544332211"
+      phone: "+5544332211"
