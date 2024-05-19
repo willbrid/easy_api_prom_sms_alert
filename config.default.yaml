@@ -3,7 +3,7 @@ easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: test
-    password: test
+    password: test@test
   provider:
     url: "http://localhost:5797"
     authentication:
@@ -12,8 +12,8 @@ easy_api_prom_sms_alert:
         username: 'xx' 
         password: 'xxxxxxxxx'
       authorization: 
-        type: 'Bearer'
-        credential: 'xxxxxxxx'
+        type: ''
+        credential: ''
     fields: 
       from: "from"
       from_value: "+1234567890"

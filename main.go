@@ -14,7 +14,7 @@ var validate *validator.Validate
 func main() {
 	// Load configuration file
 	var configFile string
-	flag.StringVar(&configFile, "config-file", "config.yaml", "Chemin du fichier de configuration")
+	flag.StringVar(&configFile, "config-file", "config.default.yaml", "Chemin du fichier de configuration")
 	flag.Parse()
 
 	validate = validator.New(validator.WithRequiredStructEnabled())
