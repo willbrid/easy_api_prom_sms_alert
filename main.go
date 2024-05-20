@@ -1,6 +1,7 @@
 package main
 
 import (
+	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/logging"
 
@@ -36,8 +37,9 @@ func main() {
 		return
 	}
 
+	alertSender := alert.NewAlertSender(configLoaded)
 	router := mux.NewRouter()
-	router.HandleFunc("/api-alert", configLoaded.AlertHandler).Methods("POST")
+	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
 	logging.Log(logging.Info, "Server is listening on port %v", strconv.Itoa(listenPort))
 	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
 	if err != nil {
