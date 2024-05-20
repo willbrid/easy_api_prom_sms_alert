@@ -44,7 +44,7 @@ func main() {
 	logging.Log(logging.Info, "server is listening on port %v", strconv.Itoa(listenPort))
 	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
 	if err != nil {
-		logging.Log(logging.Error, "Failed to start server: %v", err.Error())
+		logging.Log(logging.Error, "failed to start server: %v", err.Error())
 		return
 	}
 }
