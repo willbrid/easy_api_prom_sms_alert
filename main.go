@@ -36,11 +36,12 @@ func main() {
 		logging.Log(logging.Error, "error loading configuration")
 		return
 	}
+	logging.Log(logging.Info, "configuration file '%s' was loaded successfully", configFile)
 
 	alertSender := alert.NewAlertSender(configLoaded)
 	router := mux.NewRouter()
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
-	logging.Log(logging.Info, "Server is listening on port %v", strconv.Itoa(listenPort))
+	logging.Log(logging.Info, "server is listening on port %v", strconv.Itoa(listenPort))
 	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
 	if err != nil {
 		logging.Log(logging.Error, "Failed to start server: %v", err.Error())
