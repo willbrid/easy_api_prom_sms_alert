@@ -30,14 +30,14 @@ func main() {
 		return
 	}
 
-	_, err := config.LoadConfig(configFile, validate)
+	configLoaded, err := config.LoadConfig(configFile, validate)
 	if err != nil {
 		logging.Log(logging.Error, "error loading configuration")
 		return
 	}
 
 	router := mux.NewRouter()
-	router.HandleFunc("/api-alert", alertHandler).Methods("POST")
+	router.HandleFunc("/api-alert", configLoaded.AlertHandler).Methods("POST")
 	logging.Log(logging.Info, "Server is listening on port %v", strconv.Itoa(listenPort))
 	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
 	if err != nil {
