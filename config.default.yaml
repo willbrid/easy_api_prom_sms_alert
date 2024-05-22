@@ -23,13 +23,9 @@ easy_api_prom_sms_alert:
   recipients: 
   - name: "administration"
     members:
-    - name: "Alice"
-      phone: "+1234567890"
-    - name: "Bob"
-      phone: "+0987654321"
+    - "+1234567890"
+    - "+0987654321"
   - name: "urgence"
     members:
-    - name: "Charlie"
-      phone: "+1122334455"
-    - name: "David"
-      phone: "+5544332211"
+    - "+1122334455"
+    - "+5544332211"
