@@ -41,6 +41,7 @@ func main() {
 	alertSender := alert.NewAlertSender(configLoaded)
 	router := mux.NewRouter()
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
+
 	logging.Log(logging.Info, "server is listening on port %v", strconv.Itoa(listenPort))
 	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
 	if err != nil {
