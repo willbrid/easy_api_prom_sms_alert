@@ -12,13 +12,8 @@ import (
 type Recipients []Recipient
 
 type Recipient struct {
-	GroupName string   `mapstructure:"name"`
-	Members   []Member `mapstructure:"members"`
-}
-
-type Member struct {
-	Name  string `mapstructure:"name"`
-	Phone string `mapstructure:"phone"`
+	Name    string   `mapstructure:"name"`
+	Members []string `mapstructure:"members"`
 }
 
 type Provider struct {
