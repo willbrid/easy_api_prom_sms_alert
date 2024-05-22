@@ -19,12 +19,14 @@ func (alertSender *AlertSender) AlertHandler(resp http.ResponseWriter, req *http
 
 	alertSender.setData(&alertData)
 
-	err = alertSender.sendAlert()
-	if err != nil {
-		logging.Log(logging.Error, "failed to send alert : %s", err.Error())
-		http.Error(resp, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	go func() {
+		err = alertSender.sendAlert()
+		if err != nil {
+			logging.Log(logging.Error, "failed to send alert : %s", err.Error())
+			http.Error(resp, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}()
 
 	resp.Header().Set("Content-Type", "application/json")
 	resp.WriteHeader(http.StatusNoContent)
