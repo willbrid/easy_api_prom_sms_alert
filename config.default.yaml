@@ -8,9 +8,6 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: false
-      basic: 
-        username: 'xx' 
-        password: 'xxxxxxxxx'
       authorization: 
         type: ''
         credential: ''
