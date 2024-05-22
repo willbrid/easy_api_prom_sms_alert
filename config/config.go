@@ -25,13 +25,7 @@ type Provider struct {
 
 type Authentication struct {
 	Enabled        bool `mapstructure:"enabled"`
-	*Basic         `mapstructure:"basic"`
 	*Authorization `mapstructure:"authorization"`
-}
-
-type Basic struct {
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
 }
 
 type Authorization struct {
