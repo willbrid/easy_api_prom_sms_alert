@@ -118,7 +118,8 @@ func validateRecipientsConfig(v *viper.Viper, validate *validator.Validate) erro
 			return fmt.Errorf("error converting recipient to map[string]interface{}")
 		}
 
-		if err := validate.Var(recipientMap["name"], "required,max=25"); err != nil {
+		name := recipientMap["name"].(string)
+		if err := validate.Var(name, "required,max=25"); err != nil {
 			return fmt.Errorf("the field recipients[].name is required and must be a string at most 25 characters long")
 		}
 
@@ -129,18 +130,10 @@ func validateRecipientsConfig(v *viper.Viper, validate *validator.Validate) erro
 		if len(members) > 50 {
 			return fmt.Errorf("recipients members configuration must contain at most 50 items")
 		}
-
 		for _, member := range members {
-			memberMap, ok := member.(map[string]interface{})
-			if !ok {
-				return fmt.Errorf("error converting member to map[string]interface{}")
-			}
-
-			if err := validate.Var(memberMap["name"], "required,max=25"); err != nil {
-				return fmt.Errorf("the field recipients[].members[].name is required and must be a string at most 25 characters long")
-			}
-			if err := validate.Var(memberMap["phone"], "required,max=25"); err != nil {
-				return fmt.Errorf("the field recipients[].members[].phone is required and must be a string at most 25 characters long")
+			memberStr := member.(string)
+			if err := validate.Var(memberStr, "required,max=25"); err != nil {
+				return fmt.Errorf("the field recipients[].members[] is required and must be a string at most 25 characters long")
 			}
 		}
 	}
