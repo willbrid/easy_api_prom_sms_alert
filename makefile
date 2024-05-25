@@ -23,7 +23,7 @@ $(BUILD_DIR):
 
 # Build binary
 build: $(BUILD_DIR)
-	GO111MODULE=on GOOS=$(OS) GOARCH=$(ARCH) go build -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-$(OS)-$(ARCH) .
+	GO111MODULE=on CGO_ENABLED=0 GOOS=$(OS) GOARCH=$(ARCH) go build -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-$(OS)-$(ARCH) .
 
 # Archive the build
 archive: build
