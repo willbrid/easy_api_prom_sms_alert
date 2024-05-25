@@ -92,5 +92,6 @@ func sendSMSFromProviderApi(config *config.Config, message string) error {
 		return fmt.Errorf("request failed with status : %s", resp.Status)
 	}
 
+	logging.Log(logging.Info, "successful send request with body %s", message)
 	return nil
 }
