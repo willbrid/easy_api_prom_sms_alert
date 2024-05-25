@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sort"
 	"strings"
 
 	"github.com/prometheus/alertmanager/template"
@@ -37,18 +36,11 @@ func (alertSender *AlertSender) AlertHandler(resp http.ResponseWriter, req *http
 }
 
 func (alertSender *AlertSender) sendAlert() error {
-	var recipientName string
-
 	for _, alert := range alertSender.data.Alerts {
-		alertMsg := getMsgFromAlert(alert)
+		alertMsg := alertSender.getMsgFromAlert(alert)
+		recipientName := alertSender.getRecipientFromAlert(alert)
+		members := alertSender.getRecipientMembers(recipientName)
 
-		if value, exists := alert.Labels["team"]; exists {
-			recipientName = value
-		} else {
-			recipientName = alertSender.config.EasyAPIPromAlertSMS.Recipients[0].Name
-		}
-
-		members := getRecipientMembers(recipientName, alertSender.config.EasyAPIPromAlertSMS.Recipients)
 		for _, member := range members {
 			var builder strings.Builder
 			body := map[string]string{
@@ -64,6 +56,7 @@ func (alertSender *AlertSender) sendAlert() error {
 				logging.Log(logging.Info, builder.String())
 			} else {
 				if err := consumeProviderApi(alertSender.config, builder.String()); err != nil {
+					logging.Log(logging.Error, err.Error())
 					continue
 				}
 			}
@@ -71,44 +64,6 @@ func (alertSender *AlertSender) sendAlert() error {
 	}
 
 	return nil
-}
-
-func getMsgFromAlert(alert template.Alert) string {
-	var (
-		pairs   []string = []string{}
-		message string
-	)
-
-	for k, v := range alert.Labels {
-		if k != "team" {
-			pairs = append(pairs, k+"= "+v)
-		}
-	}
-	sort.Strings(pairs)
-	message = strings.ToUpper(alert.Status) + "\n" + strings.Join(pairs, "\n")
-
-	if summary, exists := alert.Annotations["summary"]; exists && summary != "" {
-		message += "summary: " + summary + "\n"
-	}
-
-	if description, exists := alert.Annotations["description"]; exists && description != "" {
-		message += "description: " + description + "\n"
-	}
-
-	return message
-}
-
-func getRecipientMembers(recipientName string, recipients config.Recipients) []string {
-	var recipient config.Recipient
-
-	for _, recipientItem := range recipients {
-		if recipient.Name == recipientName {
-			recipient = recipientItem
-			break
-		}
-	}
-
-	return recipient.Members
 }
 
 func consumeProviderApi(config *config.Config, message string) error {
