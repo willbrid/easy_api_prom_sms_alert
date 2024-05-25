@@ -49,7 +49,7 @@ func validateProviderConfig(v *viper.Viper, validate *validator.Validate) error 
 		}
 
 		if len(providerAuthAuthorizationType) != 0 {
-			if err := validate.Var(providerAuthAuthorizationType, "required,oneof='Bearer Basic ApiKey'"); err != nil {
+			if err := validate.Var(providerAuthAuthorizationType, "required,oneof=Bearer Basic ApiKey"); err != nil {
 				return fmt.Errorf("when provider.authentication.authorization is used, the field provider.authentication.authorization.type must be among the values : Bearer, Basic, ApiKey")
 			}
 			if err := validate.Var(providerAuthAuthorizationCredential, "required,max=255"); err != nil {
