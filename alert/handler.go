@@ -42,6 +42,7 @@ func (alertSender *AlertSender) sendAlert() error {
 		members := alertSender.getRecipientMembers(recipientName)
 
 		for _, member := range members {
+
 			var builder strings.Builder
 			body := map[string]string{
 				alertSender.config.EasyAPIPromAlertSMS.Provider.From:    alertSender.config.EasyAPIPromAlertSMS.Provider.FromValue,
@@ -57,7 +58,6 @@ func (alertSender *AlertSender) sendAlert() error {
 			} else {
 				if err := sendSMSFromProviderApi(alertSender.config, builder.String()); err != nil {
 					logging.Log(logging.Error, err.Error())
-					continue
 				}
 			}
 		}
