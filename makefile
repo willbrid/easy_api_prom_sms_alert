@@ -11,7 +11,7 @@ OS = linux
 ARCHIVE = $(BINARY_NAME)-$(OS)-$(ARCH).tar.gz
 
 # Targets
-all: clean build
+all: clean build archive
 
 # Clean build directory
 clean:
