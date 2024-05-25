@@ -44,7 +44,7 @@ func (alertSender *AlertSender) getMsgFromAlert(alert template.Alert) string {
 
 	for k, v := range alert.Labels {
 		if k != "team" {
-			pairs = append(pairs, k+"= "+v)
+			pairs = append(pairs, k+": "+v)
 		}
 	}
 	sort.Strings(pairs)
