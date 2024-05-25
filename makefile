@@ -10,9 +10,6 @@ OS = linux
 
 ARCHIVE = $(BINARY_NAME)-$(OS)-$(ARCH).tar.gz
 
-# Go build command template
-BUILD_CMD = GOOS=$(OS) GOARCH=$(ARCH) go build -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-$(OS)-$(ARCH)
-
 # Targets
 all: clean build
 
@@ -26,7 +23,7 @@ $(BUILD_DIR):
 
 # Build binary
 build: $(BUILD_DIR)
-    $(BUILD_CMD)
+    GO111MODULE=on GOOS=$(OS) GOARCH=$(ARCH) go build -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-$(OS)-$(ARCH) .
 
 # Archive the build
 archive: build
