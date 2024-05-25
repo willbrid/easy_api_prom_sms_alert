@@ -8,7 +8,7 @@ VERSION ?= dev
 ARCH = amd64
 OS = linux
 
-ARCHIVE = $(BINARY_NAME)-$(OS)-$(ARCH).tar.gz
+ARCHIVE = $(BINARY_NAME)-$(VERSION)-$(OS)-$(ARCH).tar.gz
 
 # Targets
 all: clean build archive
