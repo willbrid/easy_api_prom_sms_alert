@@ -43,8 +43,9 @@ func main() {
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
 	router.Use(alertSender.AuthMiddleware)
 
-	logging.Log(logging.Info, "server is listening on port %v", strconv.Itoa(listenPort))
-	err = http.ListenAndServe(":"+strconv.Itoa(listenPort), router)
+	strListenPort := strconv.Itoa(listenPort)
+	logging.Log(logging.Info, "server is listening on port %v", strListenPort)
+	err = http.ListenAndServe(":"+strListenPort, router)
 	if err != nil {
 		logging.Log(logging.Error, "failed to start server: %v", err.Error())
 		return
