@@ -55,7 +55,7 @@ func (alertSender *AlertSender) sendAlert() error {
 			if alertSender.config.EasyAPIPromAlertSMS.Simulation {
 				logging.Log(logging.Info, builder.String())
 			} else {
-				if err := consumeProviderApi(alertSender.config, builder.String()); err != nil {
+				if err := sendSMSFromProviderApi(alertSender.config, builder.String()); err != nil {
 					logging.Log(logging.Error, err.Error())
 					continue
 				}
@@ -66,7 +66,7 @@ func (alertSender *AlertSender) sendAlert() error {
 	return nil
 }
 
-func consumeProviderApi(config *config.Config, message string) error {
+func sendSMSFromProviderApi(config *config.Config, message string) error {
 	client := &http.Client{
 		Timeout: config.EasyAPIPromAlertSMS.Provider.Timeout,
 	}
