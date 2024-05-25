@@ -14,6 +14,63 @@ Avec **Easy-api-prom-alert-sms**, les utilisateurs auront la possibilité de cho
 
 ## Installation
 
+- Via le package
+
+```
+cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
+```
+
+```
+curl -LO https://github.com/willbrid/easy-api-prom-alert-sms/releases/download/v1.0.0/easy-api-prom-sms-alert-v1.0.0-linux-amd64.tar.gz
+```
+
+```
+tar -xvzf easy-api-prom-sms-alert-v1.0.0-linux-amd64.tar.gz
+```
+
+```
+cd easy-api-prom-sms-alert-v1.0.0-linux-amd64
+```
+
+```
+vi config.yaml
+```
+
+```
+easy_api_prom_sms_alert:
+  simulation: true
+  auth:
+    enabled: true
+    username: test
+    password: test@test
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: false
+      authorization: 
+        type: ''
+        credential: ''
+    fields: 
+      from: "from"
+      from_value: "+1234567890"
+      to: "to"
+      message: "content"
+    timeout: 0s
+  recipients: 
+  - name: "administration"
+    members:
+    - "+1234567890"
+    - "+0987654321"
+  - name: "urgence"
+    members:
+    - "+1122334455"
+    - "+5544332211"
+```
+
+```
+./easy-api-prom-sms-alert-v1.0.0-linux-amd64 --config-file ./config.yaml
+```
+
 - Via docker
 
 --- **Installation en utilisant le fichier de configuration par défaut**
