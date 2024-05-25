@@ -67,7 +67,7 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 	var recipient config.Recipient
 
 	for _, recipientItem := range recipients {
-		if recipient.Name == recipientName {
+		if recipientItem.Name == recipientName {
 			recipient = recipientItem
 			break
 		}
