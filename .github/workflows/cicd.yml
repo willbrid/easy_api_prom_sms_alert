@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload release assets
         run: |
-          gh release upload ${{ github.ref_name }} ./build/easy-api-prom-sms-alert-${{ github.ref_name }}-linux-amd64.tar.gz
+          gh release upload ${{ github.ref_name }} easy-api-prom-sms-alert-${{ github.ref_name }}-linux-amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
