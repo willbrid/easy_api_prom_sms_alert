@@ -29,7 +29,7 @@ func (alertSender *AlertSender) getRecipientFromAlert(alert template.Alert) stri
 	if value, exists := alert.Labels["team"]; exists {
 		recipientName = value
 	} else {
-		recipientName = alertSender.config.EasyAPIPromAlertSMS.Recipients[0].Name
+		recipientName = alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue
 	}
 
 	return recipientName
