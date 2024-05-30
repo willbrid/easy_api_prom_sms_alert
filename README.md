@@ -21,15 +21,15 @@ cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
 ```
 
 ```
-curl -LO https://github.com/willbrid/easy-api-prom-alert-sms/releases/download/v1.0.0/easy-api-prom-sms-alert-v1.0.0-linux-amd64.tar.gz
+curl -LO https://github.com/willbrid/easy-api-prom-alert-sms/releases/download/v1.0.1/easy-api-prom-alert-sms_1.0.1_linux_amd64.tar.gz
 ```
 
 ```
-tar -xvzf easy-api-prom-sms-alert-v1.0.0-linux-amd64.tar.gz
+mkdir easy-api-prom-alert-sms_1.0.1_linux_amd64 && tar -xvzf easy-api-prom-alert-sms_1.0.1_linux_amd64.tar.gz -C easy-api-prom-alert-sms_1.0.1_linux_amd64
 ```
 
 ```
-cd easy-api-prom-sms-alert-v1.0.0-linux-amd64
+cd easy-api-prom-alert-sms_1.0.1_linux_amd64
 ```
 
 ```
@@ -68,7 +68,7 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-./easy-api-prom-sms-alert-v1.0.0-linux-amd64 --config-file ./config.yaml
+./easy-api-prom-alert-sms_1.0.1_linux_amd64 --config-file ./config.yaml
 ```
 
 - Via docker
@@ -76,7 +76,7 @@ easy_api_prom_sms_alert:
 --- **Installation en utilisant le fichier de configuration par défaut**
 
 ```
-docker run -d -p 8000:5957 --name alert-sms-sender willbrid/easy-api-prom-sms-alert:v1.0.0 --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
+docker run -d -p 8000:5957 --name alert-sms-sender willbrid/easy-api-prom-sms-alert:latest --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
 ```
 
 Dans cet exemple, le port par défaut **5957** interne au container est mappé au port externe **8000**. 
@@ -123,7 +123,7 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-docker run -d -p 8000:5957 -v $HOME/alert-prometheus/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml --name alert-sms-sender willbrid/easy-api-prom-sms-alert:v1.0.0 --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
+docker run -d -p 8000:5957 -v $HOME/alert-prometheus/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml --name alert-sms-sender willbrid/easy-api-prom-sms-alert:latest --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
 ```
 
 ## Utilisation
