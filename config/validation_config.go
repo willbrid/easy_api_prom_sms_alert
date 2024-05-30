@@ -31,6 +31,27 @@ func validateAuthConfig(v *viper.Viper, validate *validator.Validate) error {
 	return nil
 }
 
+func validateProviderParameter(v *viper.Viper, validate *validator.Validate, paramKey string) error {
+	providerParamField := "easy_api_prom_sms_alert.provider.parameters." + paramKey
+	providerParamNameField := v.GetString(providerParamField + ".param_name")
+	providerParamValueField := v.GetString(providerParamField + ".param_value")
+	providerParamMethodField := v.GetString(providerParamField + ".param_method")
+
+	if err := validate.Var(providerParamNameField, "required,max=25"); err != nil {
+		return fmt.Errorf("the field provider.parameters.%s.param_name is required and must be a string at most 25 characters long", paramKey)
+	}
+
+	if err := validate.Var(providerParamMethodField, "required,oneof="+PostMethod+" "+QueryMethod); err != nil {
+		return fmt.Errorf("the field provider.parameters.%s.param_method must be among the values : %s and %s", paramKey, PostMethod, QueryMethod)
+	}
+
+	if err := validate.Var(providerParamValueField, "required,max=25"); paramKey != "message" && err != nil {
+		return fmt.Errorf("the field provider.parameters.%s.param_value is required and must be a string at most 25 characters long", paramKey)
+	}
+
+	return nil
+}
+
 // validateProviderConfig validate provider configuration
 func validateProviderConfig(v *viper.Viper, validate *validator.Validate) error {
 	// Validate provider url
@@ -62,21 +83,11 @@ func validateProviderConfig(v *viper.Viper, validate *validator.Validate) error 
 	}
 
 	// validate provider fields config
-	providerFieldsFrom := v.GetString("easy_api_prom_sms_alert.provider.fields.from")
-	providerFieldsFromValue := v.GetString("easy_api_prom_sms_alert.provider.fields.from_value")
-	providerFieldsTo := v.GetString("easy_api_prom_sms_alert.provider.fields.to")
-	providerFieldsMessage := v.GetString("easy_api_prom_sms_alert.provider.fields.message")
-	if err := validate.Var(providerFieldsFrom, "required,max=25"); err != nil {
-		return fmt.Errorf("the field provider.fields.from is required and must be a string at most 25 characters long")
-	}
-	if err := validate.Var(providerFieldsFromValue, "required,max=25"); err != nil {
-		return fmt.Errorf("the field provider.fields.from_value is required and must be a string at most 25 characters long")
-	}
-	if err := validate.Var(providerFieldsTo, "required,max=25"); err != nil {
-		return fmt.Errorf("the field provider.fields.to is required and must be a string at most 25 characters long")
-	}
-	if err := validate.Var(providerFieldsMessage, "required,max=25"); err != nil {
-		return fmt.Errorf("the field provider.fields.message is required and must be a string at most 25 characters long")
+	paramKeys := [3]string{"from", "to", "message"}
+	for _, paramKey := range paramKeys {
+		if err := validateProviderParameter(v, validate, paramKey); err != nil {
+			return err
+		}
 	}
 
 	return nil
