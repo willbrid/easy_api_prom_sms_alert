@@ -95,8 +95,8 @@ func validateProviderConfig(v *viper.Viper, validate *validator.Validate) error 
 	}
 
 	// validate provider fields config
-	paramKeys := [3]string{"from", "to", "message"}
-	for _, paramKey := range paramKeys {
+	providerParamKeys := [3]string{"from", "to", "message"}
+	for _, paramKey := range providerParamKeys {
 		if err := validateProviderParameter(v, validate, paramKey); err != nil {
 			return err
 		}
