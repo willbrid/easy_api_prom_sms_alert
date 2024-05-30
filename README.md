@@ -1,8 +1,8 @@
-# Easy-api-prom-alert-sms
+# Easy_api_prom_sms_alert
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-**Easy-api-prom-alert-sms** est un webhook pour prometheus permettant d'envoyer des alertes sms avec n'importe quel fournisseur de sms exposant une api.
+**Easy_api_prom_sms_alert** est un webhook pour prometheus permettant d'envoyer des alertes sms avec n'importe quel fournisseur de sms exposant une api.
 
 ## Problème
 
@@ -10,7 +10,7 @@ Lorsque **Prometheus** détecte des conditions anormales dans les systèmes surv
 
 ## Solution
 
-Avec **Easy-api-prom-alert-sms**, les utilisateurs auront la possibilité de choisir n'importe quel fournisseur de services SMS qui expose une API en **HTTP POST**. Cela leur donnera la liberté de sélectionner le fournisseur qui répond au mieux à leurs besoins en termes de coût, de fiabilité et de couverture géographique.
+Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de choisir n'importe quel fournisseur de services SMS qui expose une API en **HTTP POST**. Cela leur donnera la liberté de sélectionner le fournisseur qui répond au mieux à leurs besoins en termes de coût, de fiabilité et de couverture géographique.
 
 ## Installation
 
@@ -21,15 +21,15 @@ cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
 ```
 
 ```
-curl -LO https://github.com/willbrid/easy-api-prom-alert-sms/releases/download/v1.0.1/easy-api-prom-alert-sms_1.0.1_linux_amd64.tar.gz
+curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.0.1/easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz
 ```
 
 ```
-mkdir easy-api-prom-alert-sms_1.0.1_linux_amd64 && tar -xvzf easy-api-prom-alert-sms_1.0.1_linux_amd64.tar.gz -C easy-api-prom-alert-sms_1.0.1_linux_amd64
+mkdir easy_api_prom_sms_alert_1.0.1_linux_amd64 && tar -xvzf easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz -C easy_api_prom_sms_alert_1.0.1_linux_amd64
 ```
 
 ```
-cd easy-api-prom-alert-sms_1.0.1_linux_amd64
+cd easy_api_prom_sms_alert_1.0.1_linux_amd64
 ```
 
 ```
@@ -68,7 +68,7 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-./easy-api-prom-alert-sms_1.0.1_linux_amd64 --config-file ./config.yaml
+./easy_api_prom_sms_alert_1.0.1_linux_amd64 --config-file ./config.yaml
 ```
 
 - Via docker
@@ -175,7 +175,7 @@ curl --location 'http://localhost:8000/api-alert' \
 
 - **Intégration dans Alertmanager**
 
-Pour intégrer **Easy-api-prom-alert-sms** dans **Alertmanager**, vous devez configurer un webhook en ajoutant un récepteur webhook à votre configuration d' **Alertmanager**.
+Pour intégrer **Easy_api_prom_sms_alert** dans **Alertmanager**, vous devez configurer un webhook en ajoutant un récepteur webhook à votre configuration d' **Alertmanager**.
 
 ```
 receivers:
