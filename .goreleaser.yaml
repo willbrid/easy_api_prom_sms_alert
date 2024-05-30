@@ -1,4 +1,7 @@
 project_name: Easy-api-prom-alert-sms
+before:
+  hooks:
+  - go mod tidy
 changelog:
   sort: asc
   filters:
