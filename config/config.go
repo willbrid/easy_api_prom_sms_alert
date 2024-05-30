@@ -1,60 +1,11 @@
 package config
 
 import (
-	"time"
-
 	"easy-api-prom-alert-sms/logging"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
 )
-
-type Recipients []Recipient
-
-type Recipient struct {
-	Name    string   `mapstructure:"name"`
-	Members []string `mapstructure:"members"`
-}
-
-type Provider struct {
-	Url             string        `mapstructure:"url"`
-	Timeout         time.Duration `mapstructure:"timeout"`
-	*Authentication `mapstructure:"authentication"`
-	Parameters      struct {
-		From    Parameter `mapstructure:"from"`
-		To      Parameter `mapstructure:"to"`
-		Message Parameter `mapstructure:"message"`
-	} `mapstructure:"parameters"`
-}
-
-type Authentication struct {
-	Enabled        bool `mapstructure:"enabled"`
-	*Authorization `mapstructure:"authorization"`
-}
-
-type Authorization struct {
-	Type       string `mapstructure:"type"`
-	Credential string `mapstructure:"credential"`
-}
-
-const (
-	PostMethod   string = "post"
-	QueryMethod  string = "query"
-	NoParamName  string = "none"
-	NoParamValue string = "none"
-)
-
-type Parameter struct {
-	ParamName   string `mapstructure:"param_name"`
-	ParamValue  string `mapstructure:"param_value"`
-	ParamMethod string `mapstructure:"param_method"`
-}
-
-type Auth struct {
-	Enabled  bool   `mapstructure:"enabled"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
-}
 
 type Config struct {
 	EasyAPIPromAlertSMS struct {
