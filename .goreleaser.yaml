@@ -1,0 +1,23 @@
+project_name: Easy-api-prom-alert-sms
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^build:"
+      - "^chore:"
+      - "^Merge"
+release:
+  prerelease: auto
+builds:
+  - env: 
+    - CGO_ENABLED=0
+    - GO111MODULE=on
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
