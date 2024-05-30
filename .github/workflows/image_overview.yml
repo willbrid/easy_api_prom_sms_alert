@@ -1,0 +1,31 @@
+name: Push README to Docker Hub
+on:
+  push:
+    paths:
+      - "README.md"
+      - ".github/workflows/image_overview.yml"
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  PushDockerHubReadme:
+    runs-on: ubuntu-latest
+    name: Push README to Docker Hub
+    if: github.repository_owner == 'willbrid'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set docker hub repo name
+        run: echo "DOCKER_REPO_NAME=willbrid/easy-api-prom-sms-alert" >> $GITHUB_ENV
+      - name: Push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_PASS: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        with:
+          destination_container_repo: ${{ env.DOCKER_REPO_NAME }}
+          provider: dockerhub
+          short_description: ${{ env.DOCKER_REPO_NAME }}
+          readme_file: 'README.md'
