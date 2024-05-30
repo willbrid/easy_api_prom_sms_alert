@@ -84,8 +84,8 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", NoParamValue)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", NoParamName)
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", NoParamValue)
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", PostMethod)
+	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_value", "")
+	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_method", PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make(Recipients, 0))
 }
