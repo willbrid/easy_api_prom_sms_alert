@@ -20,7 +20,11 @@ type Provider struct {
 	Url             string        `mapstructure:"url"`
 	Timeout         time.Duration `mapstructure:"timeout"`
 	*Authentication `mapstructure:"authentication"`
-	*Field          `mapstructure:"fields"`
+	Parameters      struct {
+		From    Parameter `mapstructure:"from"`
+		To      Parameter `mapstructure:"to"`
+		Message Parameter `mapstructure:"message"`
+	} `mapstructure:"parameters"`
 }
 
 type Authentication struct {
@@ -33,11 +37,10 @@ type Authorization struct {
 	Credential string `mapstructure:"credential"`
 }
 
-type Field struct {
-	From      string `mapstructure:"from"`
-	FromValue string `mapstructure:"from_value"`
-	To        string `mapstructure:"to"`
-	Message   string `mapstructure:"message"`
+type Parameter struct {
+	ParamName   string `mapstructure:"param_name"`
+	ParamValue  string `mapstructure:"param_value"`
+	ParamMethod string `mapstructure:"param_method"`
 }
 
 type Auth struct {
