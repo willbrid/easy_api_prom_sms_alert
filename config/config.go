@@ -37,6 +37,13 @@ type Authorization struct {
 	Credential string `mapstructure:"credential"`
 }
 
+const (
+	PostMethod   string = "post"
+	QueryMethod  string = "query"
+	NoParamName  string = "none"
+	NoParamValue string = "none"
+)
+
 type Parameter struct {
 	ParamName   string `mapstructure:"param_name"`
 	ParamValue  string `mapstructure:"param_value"`
@@ -70,10 +77,15 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.basic.password", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.type", "Bearer")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.credential", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.from", "from")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.from_value", "SENDER")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.to", "to")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.message", "content")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_name", "from")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_value", NoParamValue)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_name", "to")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", NoParamValue)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", NoParamName)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", NoParamValue)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make(Recipients, 0))
 }
