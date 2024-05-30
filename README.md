@@ -25,11 +25,7 @@ curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v
 ```
 
 ```
-mkdir easy_api_prom_sms_alert_1.0.1_linux_amd64 && tar -xvzf easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz -C easy_api_prom_sms_alert_1.0.1_linux_amd64
-```
-
-```
-cd easy_api_prom_sms_alert_1.0.1_linux_amd64
+tar -xvzf easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz
 ```
 
 ```
