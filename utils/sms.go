@@ -24,9 +24,10 @@ func SendSMSFromApi(url string, body string, authEnable bool, authType string, a
 			return err
 		}
 
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Add("accept", "application/json")
+		req.Header.Add("Content-Type", "application/json")
 		if authEnable {
-			req.Header.Set("Authorization", authType+" "+authCred)
+			req.Header.Add("Authorization", authType+" "+authCred)
 		}
 
 		resp, err := client.Do(req)
