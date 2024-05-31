@@ -1,4 +1,4 @@
-project_name: Easy-api-prom-alert-sms
+project_name: easy_api_prom_sms_alert
 before:
   hooks:
   - go mod tidy
