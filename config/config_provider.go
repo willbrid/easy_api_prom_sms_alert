@@ -30,10 +30,8 @@ type Authorization struct {
 }
 
 const (
-	PostMethod   string = "post"
-	QueryMethod  string = "query"
-	NoParamName  string = "none"
-	NoParamValue string = "none"
+	PostMethod  string = "post"
+	QueryMethod string = "query"
 )
 
 type Parameter struct {
