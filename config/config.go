@@ -41,6 +41,23 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make(Recipients, 0))
 }
 
+// validateConfig validate the entire configuration
+func validateConfig(v *viper.Viper, validate *validator.Validate) error {
+	if err := validateAuthConfig(v, validate); err != nil {
+		return err
+	}
+
+	if err := validateProviderConfig(v, validate); err != nil {
+		return err
+	}
+
+	if err := validateRecipientsConfig(v, validate); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // LoadConfig load yaml configuration file
 func LoadConfig(filename string, validate *validator.Validate) (*Config, error) {
 	// Load configuration file
