@@ -46,7 +46,7 @@ easy_api_prom_sms_alert:
       authorization: 
         type: ''
         credential: ''
-    fields: 
+    parameters: 
       from: 
         param_name: "from"
         param_value: "+1234567890"
@@ -107,7 +107,7 @@ easy_api_prom_sms_alert:
       authorization: 
         type: ''
         credential: ''
-    fields: 
+    parameters: 
       from: 
         param_name: "from"
         param_value: "+1234567890"
@@ -238,7 +238,7 @@ easy_api_prom_sms_alert:
         # Chaine de caractères représentant la clé secret
         credential: ''
     # Paramètre des champs du corps de requête http de l'api    
-    fields:
+    parameters:
       # Champ d'expéditeur
       from:
         # Nom du champ d'expéditeur
