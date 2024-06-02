@@ -1,50 +1,11 @@
 package config
 
 import (
-	"time"
-
 	"easy-api-prom-alert-sms/logging"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
 )
-
-type Recipients []Recipient
-
-type Recipient struct {
-	Name    string   `mapstructure:"name"`
-	Members []string `mapstructure:"members"`
-}
-
-type Provider struct {
-	Url             string        `mapstructure:"url"`
-	Timeout         time.Duration `mapstructure:"timeout"`
-	*Authentication `mapstructure:"authentication"`
-	*Field          `mapstructure:"fields"`
-}
-
-type Authentication struct {
-	Enabled        bool `mapstructure:"enabled"`
-	*Authorization `mapstructure:"authorization"`
-}
-
-type Authorization struct {
-	Type       string `mapstructure:"type"`
-	Credential string `mapstructure:"credential"`
-}
-
-type Field struct {
-	From      string `mapstructure:"from"`
-	FromValue string `mapstructure:"from_value"`
-	To        string `mapstructure:"to"`
-	Message   string `mapstructure:"message"`
-}
-
-type Auth struct {
-	Enabled  bool   `mapstructure:"enabled"`
-	Username string `mapstructure:"username"`
-	Password string `mapstructure:"password"`
-}
 
 type Config struct {
 	EasyAPIPromAlertSMS struct {
@@ -67,12 +28,34 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.basic.password", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.type", "Bearer")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.credential", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.from", "from")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.from_value", "SENDER")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.to", "to")
-	v.SetDefault("easy_api_prom_sms_alert.provider.fields.message", "content")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_name", "from")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_value", "")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_name", "to")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", "")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "")
+	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_value", "")
+	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_method", PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make(Recipients, 0))
+}
+
+// validateConfig validate the entire configuration
+func validateConfig(v *viper.Viper, validate *validator.Validate) error {
+	if err := validateAuthConfig(v, validate); err != nil {
+		return err
+	}
+
+	if err := validateProviderConfig(v, validate); err != nil {
+		return err
+	}
+
+	if err := validateRecipientsConfig(v, validate); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // LoadConfig load yaml configuration file

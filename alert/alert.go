@@ -2,7 +2,12 @@ package alert
 
 import (
 	"easy-api-prom-alert-sms/config"
+	"easy-api-prom-alert-sms/logging"
+	"easy-api-prom-alert-sms/utils"
 
+	"encoding/json"
+	"fmt"
+	"net/url"
 	"sort"
 	"strings"
 
@@ -29,7 +34,7 @@ func (alertSender *AlertSender) getRecipientFromAlert(alert template.Alert) stri
 	if value, exists := alert.Labels["team"]; exists {
 		recipientName = value
 	} else {
-		recipientName = alertSender.config.EasyAPIPromAlertSMS.Recipients[0].Name
+		recipientName = alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue
 	}
 
 	return recipientName
@@ -74,4 +79,73 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 	}
 
 	return recipient.Members
+}
+
+// getUrlAndBody help to get parsed url and body
+func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
+	var (
+		postParams map[string]string = map[string]string{
+			alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.Message.ParamName: message,
+		}
+		queryParams url.Values = url.Values{}
+	)
+
+	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamMethod == config.PostMethod {
+		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName] = alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue
+	} else {
+		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName, alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue)
+	}
+
+	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamMethod == config.PostMethod {
+		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName] = member
+	} else {
+		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName, member)
+	}
+
+	var (
+		builder    strings.Builder
+		encodedURL string
+	)
+
+	if len(queryParams) > 0 {
+		encodedURL = fmt.Sprintf("%s?%s", alertSender.config.EasyAPIPromAlertSMS.Provider.Url, queryParams.Encode())
+	} else {
+		encodedURL = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
+	}
+
+	if err := json.NewEncoder(&builder).Encode(postParams); err != nil {
+		return "", "", err
+	}
+
+	return encodedURL, builder.String(), nil
+}
+
+func (alertSender *AlertSender) sendAlert() error {
+	for _, alert := range alertSender.data.Alerts {
+		alertMsg := alertSender.getMsgFromAlert(alert)
+		recipientName := alertSender.getRecipientFromAlert(alert)
+		members := alertSender.getRecipientMembers(recipientName)
+
+		for _, member := range members {
+			url, body, err := alertSender.getUrlAndBody(member, alertMsg)
+
+			if err != nil {
+				return err
+			}
+
+			if err := utils.SendSMSFromApi(
+				url,
+				body,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Enabled,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Type,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Credential,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Timeout,
+				alertSender.config.EasyAPIPromAlertSMS.Simulation,
+			); err != nil {
+				logging.Log(logging.Error, err.Error())
+			}
+		}
+	}
+
+	return nil
 }

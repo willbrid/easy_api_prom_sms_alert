@@ -11,11 +11,17 @@ easy_api_prom_sms_alert:
       authorization: 
         type: ''
         credential: ''
-    fields: 
-      from: "from"
-      from_value: "+1234567890"
-      to: "to"
-      message: "content"
+    parameters: 
+      from: 
+        param_name: "from"
+        param_value: "+1234567890"
+        param_method: "post"
+      to:
+        param_name: "to"
+        param_value: "administration"
+        param_method: "query"
+      message: 
+        param_name: "content"
     timeout: 0s
   recipients: 
   - name: "administration"
