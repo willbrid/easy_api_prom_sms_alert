@@ -21,11 +21,11 @@ cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
 ```
 
 ```
-curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.0.1/easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz
+curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.1.0/easy_api_prom_sms_alert_1.1.0_linux_amd64.tar.gz
 ```
 
 ```
-tar -xvzf easy_api_prom_sms_alert_1.0.1_linux_amd64.tar.gz
+tar -xvzf easy_api_prom_sms_alert_1.1.0_linux_amd64.tar.gz
 ```
 
 ```
@@ -47,10 +47,16 @@ easy_api_prom_sms_alert:
         type: ''
         credential: ''
     fields: 
-      from: "from"
-      from_value: "+1234567890"
-      to: "to"
-      message: "content"
+      from: 
+        param_name: "from"
+        param_value: "+1234567890"
+        param_method: "post"
+      to:
+        param_name: "to"
+        param_value: "administration"
+        param_method: "query"
+      message: 
+        param_name: "content"
     timeout: 0s
   recipients: 
   - name: "administration"
@@ -64,7 +70,7 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-./easy_api_prom_sms_alert_1.0.1_linux_amd64 --config-file ./config.yaml
+./easy_api_prom_sms_alert_1.1.0_linux_amd64 --config-file ./config.yaml
 ```
 
 - Via docker
@@ -102,10 +108,16 @@ easy_api_prom_sms_alert:
         type: ''
         credential: ''
     fields: 
-      from: "from"
-      from_value: "+1234567890"
-      to: "to"
-      message: "content"
+      from: 
+        param_name: "from"
+        param_value: "+1234567890"
+        param_method: "post"
+      to:
+        param_name: "to"
+        param_value: "administration"
+        param_method: "query"
+      message: 
+        param_name: "content"
     timeout: 0s
   recipients: 
   - name: "administration"
@@ -154,6 +166,7 @@ curl --location 'http://localhost:8000/api-alert' \
       "labels": {
         "alertname": "InstanceDown",
         "instance": "localhost:9090",
+        "team": "urgence",
         "job": "myjob",
         "severity": "critical"
       },
@@ -225,15 +238,28 @@ easy_api_prom_sms_alert:
         # Chaine de caractères représentant la clé secret
         credential: ''
     # Paramètre des champs du corps de requête http de l'api    
-    fields: 
+    fields:
       # Champ d'expéditeur
-      from: "from"
-      # Valeur du champ d'expéditeur
-      from_value: "+1234567890"
+      from:
+        # Nom du champ d'expéditeur
+        param_name: "from"
+        # Valeur du champ d'expéditeur
+        param_value: "+1234567890"
+        # méthode d'envoie du champ d'expéditeur : post ou query
+        param_method: "post"
       # Champ du destinataire
-      to: "to"
+      to:
+        # Nom du champ destinataire
+        param_name: "to"
+        # Valeur par défaut du champ destinataire qui doit correspondre à l'un des noms des récipients configurés
+        # dans le cas où le champ team est inexistant dans un champ alert
+        param_value: "administration"
+        # méthode d'envoie du champ destinataire : post ou query
+        param_method: "query"
       # Champ du contenu du SMS
-      message: "content"
+      message:
+        # Nom du champ du contenu du SMS
+        param_name: "content"
     # Paramètre de timeout à définir pour consommer l'api du fournisseur  
     timeout: 0s
 
