@@ -131,7 +131,7 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-docker run -d -p 8000:5957 -v $HOME/alert-prometheus/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml --name alert-sms-sender willbrid/easy-api-prom-sms-alert:latest --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
+docker run -d -p 8000:5957 --name alert-sms-sender -v $HOME/alert-prometheus/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml willbrid/easy-api-prom-sms-alert:latest --config-file /etc/easy-api-prom-sms-alert/config.yaml --port 5957
 ```
 
 ## Utilisation
