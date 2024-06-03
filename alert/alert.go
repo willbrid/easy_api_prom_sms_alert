@@ -53,7 +53,7 @@ func (alertSender *AlertSender) getMsgFromAlert(alert template.Alert) string {
 		}
 	}
 	sort.Strings(pairs)
-	message = strings.ToUpper(alert.Status) + "\n" + strings.Join(pairs, "\n")
+	message = strings.ToUpper(alert.Status) + "\n" + strings.Join(pairs, "\n") + "\n"
 
 	if summary, exists := alert.Annotations["summary"]; exists && summary != "" {
 		message += "summary: " + summary + "\n"
