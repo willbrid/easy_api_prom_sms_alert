@@ -21,7 +21,7 @@ cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
 ```
 
 ```
-curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.1.0/easy_api_prom_sms_alert_1.1.1_linux_amd64.tar.gz
+curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.1.1/easy_api_prom_sms_alert_1.1.1_linux_amd64.tar.gz
 ```
 
 ```
