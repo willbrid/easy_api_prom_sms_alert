@@ -275,4 +275,4 @@ easy_api_prom_sms_alert:
 
 ## Licence
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Ce projet est sous licence MIT - voir le fichier [LICENSE](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE) pour plus de détails.
