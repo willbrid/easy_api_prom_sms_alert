@@ -6,6 +6,7 @@ import (
 	"easy-api-prom-alert-sms/utils"
 
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"sort"
@@ -99,14 +100,18 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 
 	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamMethod == config.PostMethod {
 		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName] = alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue
-	} else {
+	} else if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamMethod == config.QueryMethod {
 		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName, alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue)
+	} else {
+		panic(errors.New("bad provider parameter method"))
 	}
 
 	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamMethod == config.PostMethod {
 		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName] = member
-	} else {
+	} else if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamMethod == config.QueryMethod {
 		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName, member)
+	} else {
+		panic(errors.New("bad provider parameter method"))
 	}
 
 	var (
@@ -121,7 +126,7 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 	}
 
 	if err := json.NewEncoder(&builder).Encode(postParams); err != nil {
-		return "", "", err
+		panic(err)
 	}
 
 	return encodedURL, builder.String(), nil

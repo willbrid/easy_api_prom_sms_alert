@@ -14,18 +14,18 @@ Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de cho
 
 ## Installation
 
-- Via le package
+#### Via le package
 
 ```
 cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
 ```
 
 ```
-curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v1.1.2/easy_api_prom_sms_alert_1.1.2_linux_amd64.tar.gz
+curl -LO https://github.com/willbrid/easy_api_prom_sms_alert/releases/download/v<VERSION>/easy_api_prom_sms_alert_<VERSION>_linux_amd64.tar.gz
 ```
 
 ```
-tar -xvzf easy_api_prom_sms_alert_1.1.2_linux_amd64.tar.gz
+tar -xvzf easy_api_prom_sms_alert_<VERSION>_linux_amd64.tar.gz
 ```
 
 ```
@@ -70,10 +70,12 @@ easy_api_prom_sms_alert:
 ```
 
 ```
-./easy_api_prom_sms_alert_1.1.2_linux_amd64 --config-file ./config.yaml
+./easy_api_prom_sms_alert_<VERSION>_linux_amd64 --config-file ./config.yaml
 ```
 
-- Via docker
+Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.0**).
+
+#### Via docker
 
 --- **Installation en utilisant le fichier de configuration par défaut**
 
@@ -136,7 +138,17 @@ docker run -d -p 8000:5957 --name alert-sms-sender -v $HOME/alert-prometheus/con
 
 ## Utilisation
 
-- **Test à effectuer avec curl**
+Notre fichier de configuration précédent montre que l'authentification **Basic** est activée. Ainsi il faudrait générer le **base64** de la chaine **username:password** afin de l'utiliser dans le header **Authorization**.
+
+```
+echo -n test:test@test | base64
+```
+
+```
+dGVzdDp0ZXN0QHRlc3Q=
+```
+
+#### **Test à effectuer avec curl**
 
 ```
 curl --location 'http://localhost:8000/api-alert' \
@@ -182,7 +194,7 @@ curl --location 'http://localhost:8000/api-alert' \
 }'
 ```
 
-- **Intégration dans Alertmanager**
+#### **Intégration dans Alertmanager**
 
 Pour intégrer **Easy_api_prom_sms_alert** dans **Alertmanager**, vous devez configurer un webhook en ajoutant un récepteur webhook à votre configuration d' **Alertmanager**.
 
@@ -195,7 +207,7 @@ receivers:
     http_config: 
       authorization:
         type: "Basic"
-        credentials: dGVzdDp0ZXN0QHRlc3Q=
+        credentials: dGVzdDp0ZXN0QHRlc3Q= # Base64 de la chaine username:password
 ```
 
 Pour visualiser le résultat en mode **simulation**, vous devez consulter les logs du conteneur.
@@ -204,7 +216,7 @@ Pour visualiser le résultat en mode **simulation**, vous devez consulter les lo
 docker container logs alert-sms-sender
 ```
 
-## Fichier de configuration config.yaml
+## Fichier de configuration
 
 ```
 # Documentation sur le fichier de configuration
@@ -215,6 +227,7 @@ easy_api_prom_sms_alert:
   # Paramètre d'authentification au webhook
   auth:
     # Activation de l'authentification : true -> les paramètres username et password seront requis
+    # Pour s'authentifier en header basic, il faudrait générer le base64 de la chaine username:password
     enabled: true
     # Nom d'utilisateur
     username: test
