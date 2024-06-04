@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/prometheus/alertmanager/template"
 )
@@ -61,6 +62,12 @@ func (alertSender *AlertSender) getMsgFromAlert(alert template.Alert) string {
 
 	if description, exists := alert.Annotations["description"]; exists && description != "" {
 		message += "description: " + description + "\n"
+	}
+
+	if alert.Status == "firing" {
+		message += "Started: " + alert.StartsAt.Format(time.RFC822)
+	} else if alert.Status == "resolved" {
+		message += "Resolved: " + alert.EndsAt.Format(time.RFC822)
 	}
 
 	return message
