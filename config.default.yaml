@@ -8,9 +8,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: false
-      authorization: 
-        type: ''
-        credential: ''
+      authorization_type: ''
+      authorization_credential: ''
     parameters: 
       from: 
         param_name: "from"
@@ -22,7 +21,7 @@ easy_api_prom_sms_alert:
         param_method: "query"
       message: 
         param_name: "content"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "administration"
     members:
