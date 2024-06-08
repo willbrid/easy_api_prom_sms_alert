@@ -41,23 +41,6 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make(Recipients, 0))
 }
 
-// validateConfig validate the entire configuration
-func validateConfig(v *viper.Viper, validate *validator.Validate) error {
-	if err := validateAuthConfig(v, validate); err != nil {
-		return err
-	}
-
-	if err := validateProviderConfig(v, validate); err != nil {
-		return err
-	}
-
-	if err := validateRecipientsConfig(v, validate); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // LoadConfig load yaml configuration file
 func LoadConfig(filename string, validate *validator.Validate) (*Config, error) {
 	// Load configuration file
@@ -74,11 +57,20 @@ func LoadConfig(filename string, validate *validator.Validate) (*Config, error) 
 		}
 	}
 
+	var viperInstance *viper.Viper = viper.GetViper()
 	// Set defaut configuration
-	setConfigDefaults(viper.GetViper())
+	setConfigDefaults(viperInstance)
 
 	// Validate configuration file
-	if err := validateConfig(viper.GetViper(), validate); err != nil {
+	if err := validateAuthConfig(viperInstance, validate); err != nil {
+		logging.Log(logging.Error, err.Error())
+		return nil, err
+	}
+	if err := validateProviderConfig(viperInstance, validate); err != nil {
+		logging.Log(logging.Error, err.Error())
+		return nil, err
+	}
+	if err := validateRecipientsConfig(viperInstance, validate); err != nil {
 		logging.Log(logging.Error, err.Error())
 		return nil, err
 	}
