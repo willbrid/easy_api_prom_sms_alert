@@ -66,6 +66,12 @@ easy_api_prom_sms_alert:
 `,
 	}
 
+	expectations := []string{
+		"validation failed on field 'Username' for condition 'required_if'",
+		"validation failed on field 'Username' for condition 'min'",
+		"validation failed on field 'Username' for condition 'max'",
+	}
+
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
 			filename, err := utils.CreateConfigFileForTesting(configContent)
@@ -76,10 +82,10 @@ easy_api_prom_sms_alert:
 
 			_, err = LoadConfig(filename, validate)
 
-			expected := "the field auth.username is required and must be a string between 2 and 25 characters long"
+			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
 			if err.Error() != expected {
@@ -95,7 +101,7 @@ func TestPasswordFieldWithAuthEnabled(t *testing.T) {
 easy_api_prom_sms_alert:
   auth:
     enabled: true
-    username: "test"
+    username: "xxxxx"
     password: ""
 `,
 		`---
@@ -105,13 +111,11 @@ easy_api_prom_sms_alert:
     username: "xxxxx"
     password: xxxxxxx
 `,
-		`---
-easy_api_prom_sms_alert:
-  auth:
-    enabled: true
-    username: "xxxxx"
-    password: testxxx
-`,
+	}
+
+	expectations := []string{
+		"validation failed on field 'Password' for condition 'required_if'",
+		"validation failed on field 'Password' for condition 'min'",
 	}
 
 	for index, configContent := range configSlices {
@@ -124,10 +128,10 @@ easy_api_prom_sms_alert:
 
 			_, err = LoadConfig(filename, validate)
 
-			expected := "the field auth.password is required and must be a string between 8 and 255 characters long"
+			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
 			if err.Error() != expected {
@@ -159,6 +163,11 @@ easy_api_prom_sms_alert:
 `,
 	}
 
+	expectations := []string{
+		"validation failed on field 'Url' for condition 'required'",
+		"validation failed on field 'Url' for condition 'url'",
+	}
+
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
 			filename, err := utils.CreateConfigFileForTesting(configContent)
@@ -169,10 +178,10 @@ easy_api_prom_sms_alert:
 
 			_, err = LoadConfig(filename, validate)
 
-			expected := "the field provider.url is required and must be a valid url"
+			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
 			if err.Error() != expected {
@@ -194,9 +203,6 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: ''
-        credential: ''
 `,
 		`---
 easy_api_prom_sms_alert:
@@ -208,9 +214,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: 'xxxxx'
-        credential: ''
+      authorization_type: ''
+      authorization_credential: ''
 `,
 		`---
 easy_api_prom_sms_alert:
@@ -222,16 +227,29 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: 'Bearer'
-        credential: ''
+      authorization_type: 'xxxxx'
+      authorization_credential: ''
+`,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: true
+      authorization_type: ''
+      authorization_credential: 'xxxxxxxxxx'
 `,
 	}
 
 	expectations := []string{
-		"when provider.authentication is enabled, you should provider authorization config",
-		"when provider.authentication.authorization is used, the field provider.authentication.authorization.type must be among the values : Bearer, Basic, ApiKey",
-		"when provider.authentication.authorization is used, the field provider.authentication.authorization.credential is required and must be a string at most 255 characters long",
+		"validation failed on field 'AuthorizationType' for condition 'required_if'",
+		"validation failed on field 'AuthorizationType' for condition 'required_if'",
+		"validation failed on field 'AuthorizationCredential' for condition 'required_if'",
+		"validation failed on field 'AuthorizationType' for condition 'required_if'",
 	}
 
 	for index, configContent := range configSlices {
@@ -247,7 +265,7 @@ easy_api_prom_sms_alert:
 			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
 			if err.Error() != expected {
@@ -269,9 +287,35 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
+`,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: true
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
+    parameters:
+`,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: true
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -286,12 +330,29 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
+        param_value: ""
+`,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    authentication:
+      enabled: true
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
+    parameters:
+      from:
+        param_name: "xxxxx"
+        param_value: "xxxxx"
         param_method: "xxxxx"
 `,
 		`---
@@ -304,28 +365,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
-    parameters:
-      from:
-        param_name: "xxxxx"
-        param_method: "query"
-        param_value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
-		`---
-easy_api_prom_sms_alert:
-  auth:
-    enabled: true
-    username: "xxxxx"
-    password: xxxxxxxx
-  provider:
-    url: "http://localhost:5797"
-    authentication:
-      enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -344,9 +385,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -366,9 +406,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -389,9 +428,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -407,13 +445,15 @@ easy_api_prom_sms_alert:
 	}
 
 	expectations := []string{
-		"the field provider.parameters.from.param_name is required and must be a string at most 25 characters long",
-		"the field provider.parameters.from.param_method must be among the values : post and query",
-		"the field provider.parameters.from.param_value is required and must be a string at most 25 characters long",
-		"the field provider.parameters.to.param_name is required and must be a string at most 25 characters long",
-		"the field provider.parameters.to.param_method must be among the values : post and query",
-		"the field provider.parameters.to.param_value is required and must be a string at most 25 characters long",
-		"the field provider.parameters.message.param_name is required and must be a string at most 25 characters long",
+		"validation failed on field 'ParamValue' for condition 'required'",
+		"validation failed on field 'From' for condition 'required'",
+		"validation failed on field 'ParamName' for condition 'max'",
+		"validation failed on field 'ParamValue' for condition 'required'",
+		"validation failed on field 'ParamMethod' for condition 'oneof'",
+		"validation failed on field 'ParamName' for condition 'max'",
+		"validation failed on field 'ParamValue' for condition 'required'",
+		"validation failed on field 'ParamValue' for condition 'max'",
+		"validation failed on field 'ParamName' for condition 'max'",
 	}
 
 	for index, configContent := range configSlices {
@@ -429,7 +469,7 @@ easy_api_prom_sms_alert:
 			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
 			if err.Error() != expected {
@@ -451,9 +491,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -465,7 +504,6 @@ easy_api_prom_sms_alert:
         param_value: "xxxxx"
       message:
         param_name: "xxxxx"
-  recipients:
 `,
 		`---
 easy_api_prom_sms_alert:
@@ -477,9 +515,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -492,7 +529,9 @@ easy_api_prom_sms_alert:
       message:
         param_name: "xxxxx"
   recipients:
-    - name: ""
+  - name: ""
+    members:
+    - "xxxxx"
 `,
 		`---
 easy_api_prom_sms_alert:
@@ -504,9 +543,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -519,8 +557,9 @@ easy_api_prom_sms_alert:
       message:
         param_name: "xxxxx"
   recipients:
-    - name: "admin"
-      members:
+  - name: "admin"
+    members:
+    - ""
 `,
 		`---
 easy_api_prom_sms_alert:
@@ -532,9 +571,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-      authorization:
-        type: "Bearer"
-        credential: "xxxxx"
+      authorization_type: "xxxxx"
+      authorization_credential: "xxxxx"
     parameters:
       from:
         param_name: "xxxxx"
@@ -547,17 +585,17 @@ easy_api_prom_sms_alert:
       message:
         param_name: "xxxxx"
   recipients:
-    - name: "admin"
-      members:
-      - "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  - name: "admin"
+    members:
+    - "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 `,
 	}
 
 	expectations := []string{
-		"error converting recipients to slice of interface{}",
-		"the field recipients[].name is required and must be a string at most 25 characters long",
-		"error converting recipientMap['members'] to slice of interface{}",
-		"the field recipients[].members[] is required and must be a string at most 25 characters long",
+		"validation failed on field 'Recipients' for condition 'gt'",
+		"validation failed on field 'Name' for condition 'required'",
+		"validation failed on field 'Members[0]' for condition 'min'",
+		"validation failed on field 'Members[0]' for condition 'max'",
 	}
 
 	for index, configContent := range configSlices {
@@ -573,10 +611,10 @@ easy_api_prom_sms_alert:
 			expected := expectations[index]
 
 			if err == nil {
-				t.Fatalf("no error returned, expected:\n%v", expected)
+				t.Errorf("no error returned, expected:\n%v", expected)
 			}
 
-			if err.Error() != expected {
+			if err != nil && err.Error() != expected {
 				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
 			}
 		})
