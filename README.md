@@ -43,9 +43,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: false
-      authorization: 
-        type: ''
-        credential: ''
+      authorization_type: ''
+      authorization_credential: ''
     parameters: 
       from: 
         param_name: "from"
@@ -73,7 +72,7 @@ easy_api_prom_sms_alert:
 ./easy_api_prom_sms_alert_<VERSION>_linux_amd64 --config-file ./config.yaml
 ```
 
-Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.0**).
+Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.4**).
 
 #### Via docker
 
@@ -106,9 +105,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: false
-      authorization: 
-        type: ''
-        credential: ''
+      authorization_type: ''
+      authorization_credential: ''
     parameters: 
       from: 
         param_name: "from"
@@ -245,11 +243,10 @@ easy_api_prom_sms_alert:
       # - false -> l'api du fournisseur ne nécessite pas d'authentification
       enabled: false
       # Paramètre d'autorisation d'entête http : Authorization
-      authorization:
-        # Type d'entête parmi : Bearer, Basic, ApiKey
-        type: ''
-        # Chaine de caractères représentant la clé secret
-        credential: ''
+      # Type d'entête en exemple : Bearer, Basic, ApiKey
+      authorization_type: ''
+      # Chaine de caractères représentant la clé secret
+      authorization_credential: ''
     # Paramètre des champs du corps de requête http de l'api    
     parameters:
       # Champ d'expéditeur
