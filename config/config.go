@@ -26,11 +26,9 @@ type Provider struct {
 	Url            string        `mapstructure:"url" validate:"required,url"`
 	Timeout        time.Duration `mapstructure:"timeout" validate:"required"`
 	Authentication struct {
-		Enabled       bool `mapstructure:"enabled"`
-		Authorization struct {
-			Type       string `mapstructure:"type" validate:"required,max=25"`
-			Credential string `mapstructure:"credential" validate:"required"`
-		} `mapstructure:"authorization" validate:"required_if=Enabled true"`
+		Enabled                 bool   `mapstructure:"enabled"`
+		AuthorizationType       string `mapstructure:"authorization_type" validate:"required_if=Enabled true,max=25"`
+		AuthorizationCredential string `mapstructure:"authorization_credential" validate:"required_if=Enabled true"`
 	} `mapstructure:"authentication"`
 	Parameters struct {
 		From    Parameter `mapstructure:"from" validate:"required"`
@@ -67,8 +65,6 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.auth.password", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.url", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.enabled", false)
-	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.basic.username", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.basic.password", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.type", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization.credential", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_name", "from")
@@ -113,7 +109,6 @@ func LoadConfig(filename string, validate *validator.Validate) (*Config, error) 
 
 	// Validate config struct
 	if err := validate.Struct(config); err != nil {
-		fmt.Println("BAD : " + err.Error())
 		if _, ok := err.(*validator.InvalidValidationError); ok {
 			return nil, err
 		}
