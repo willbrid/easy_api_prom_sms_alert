@@ -149,8 +149,8 @@ func (alertSender *AlertSender) sendAlert() error {
 				url,
 				body,
 				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Enabled,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Type,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Credential,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.AuthorizationType,
+				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.AuthorizationCredential,
 				alertSender.config.EasyAPIPromAlertSMS.Provider.Timeout,
 				alertSender.config.EasyAPIPromAlertSMS.Simulation,
 			); err != nil {
