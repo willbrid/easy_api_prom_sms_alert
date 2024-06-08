@@ -76,7 +76,7 @@ easy_api_prom_sms_alert:
 
 			_, err = LoadConfig(filename, validate)
 
-			expected := "the field auth.username is required and must be a string between 2 and 25 characters long"
+			expected := errAuthUsername
 
 			if err == nil {
 				t.Fatalf("no error returned, expected:\n%v", expected)
@@ -124,7 +124,7 @@ easy_api_prom_sms_alert:
 
 			_, err = LoadConfig(filename, validate)
 
-			expected := "the field auth.password is required and must be a string between 8 and 255 characters long"
+			expected := errAuthPassword
 
 			if err == nil {
 				t.Fatalf("no error returned, expected:\n%v", expected)
