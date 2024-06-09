@@ -3,12 +3,12 @@ package alert
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/utils"
-	"strings"
 
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
