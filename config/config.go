@@ -25,6 +25,7 @@ type Parameter struct {
 type Provider struct {
 	Url            string        `mapstructure:"url" validate:"required,url"`
 	Timeout        time.Duration `mapstructure:"timeout" validate:"required"`
+	ContentType    string        `mapstructure:"content_type" validate:"required,oneof=application/json application/x-www-form-urlencoded"`
 	Authentication struct {
 		Enabled                 bool   `mapstructure:"enabled"`
 		AuthorizationType       string `mapstructure:"authorization_type" validate:"required_if=Enabled true,max=25"`
