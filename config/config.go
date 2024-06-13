@@ -65,6 +65,7 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.auth.username", "")
 	v.SetDefault("easy_api_prom_sms_alert.auth.password", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.url", "")
+	v.SetDefault("easy_api_prom_sms_alert.provider.content_type", "application/json")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.enabled", false)
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization_type", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization_credential", "")
