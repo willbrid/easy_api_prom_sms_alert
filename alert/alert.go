@@ -6,7 +6,6 @@ import (
 	"easy-api-prom-alert-sms/utils"
 
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 	"sort"
@@ -91,45 +90,44 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 
 // getUrlAndBody help to get parsed url and body
 func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
-	var (
-		postParams map[string]string = map[string]string{
-			alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.Message.ParamName: message,
+	providerParams := alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters
+	postParams := map[string]string{
+		providerParams.Message.ParamName: message,
+	}
+	queryParams := url.Values{}
+
+	addParam := func(param config.Parameter, value string, postParams map[string]string, queryParams url.Values) error {
+		switch param.ParamMethod {
+		case config.PostMethod:
+			postParams[param.ParamName] = value
+		case config.QueryMethod:
+			queryParams.Add(param.ParamName, value)
+		default:
+			return fmt.Errorf("bad provider parameter method: %s", param.ParamMethod)
 		}
-		queryParams url.Values = url.Values{}
-	)
 
-	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamMethod == config.PostMethod {
-		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName] = alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue
-	} else if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamMethod == config.QueryMethod {
-		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamName, alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.From.ParamValue)
-	} else {
-		panic(errors.New("bad provider parameter method"))
+		return nil
 	}
 
-	if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamMethod == config.PostMethod {
-		postParams[alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName] = member
-	} else if alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamMethod == config.QueryMethod {
-		queryParams.Add(alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamName, member)
-	} else {
-		panic(errors.New("bad provider parameter method"))
+	if err := addParam(providerParams.From, providerParams.From.ParamValue, postParams, queryParams); err != nil {
+		return "", "", err
 	}
 
-	var (
-		builder    strings.Builder
-		encodedURL string
-	)
+	if err := addParam(providerParams.To, member, postParams, queryParams); err != nil {
+		return "", "", err
+	}
 
+	var encodedURL string = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
 	if len(queryParams) > 0 {
-		encodedURL = fmt.Sprintf("%s?%s", alertSender.config.EasyAPIPromAlertSMS.Provider.Url, queryParams.Encode())
-	} else {
-		encodedURL = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
+		encodedURL = fmt.Sprintf("%s?%s", encodedURL, queryParams.Encode())
 	}
 
-	if err := json.NewEncoder(&builder).Encode(postParams); err != nil {
-		panic(err)
+	body, err := json.Marshal(postParams)
+	if err != nil {
+		return "", "", err
 	}
 
-	return encodedURL, builder.String(), nil
+	return encodedURL, string(body), nil
 }
 
 func (alertSender *AlertSender) sendAlert() error {
@@ -137,6 +135,8 @@ func (alertSender *AlertSender) sendAlert() error {
 		alertMsg := alertSender.getMsgFromAlert(alert)
 		recipientName := alertSender.getRecipientFromAlert(alert)
 		members := alertSender.getRecipientMembers(recipientName)
+		provider := alertSender.config.EasyAPIPromAlertSMS.Provider
+		simulation := alertSender.config.EasyAPIPromAlertSMS.Simulation
 
 		for _, member := range members {
 			url, body, err := alertSender.getUrlAndBody(member, alertMsg)
@@ -148,11 +148,11 @@ func (alertSender *AlertSender) sendAlert() error {
 			if err := utils.SendSMSFromApi(
 				url,
 				body,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.Enabled,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.AuthorizationType,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Authentication.AuthorizationCredential,
-				alertSender.config.EasyAPIPromAlertSMS.Provider.Timeout,
-				alertSender.config.EasyAPIPromAlertSMS.Simulation,
+				provider.Authentication.Enabled,
+				provider.Authentication.AuthorizationType,
+				provider.Authentication.AuthorizationCredential,
+				provider.Timeout,
+				simulation,
 			); err != nil {
 				logging.Log(logging.Error, err.Error())
 			}
