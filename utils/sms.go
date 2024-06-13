@@ -3,11 +3,9 @@ package utils
 import (
 	"easy-api-prom-alert-sms/logging"
 
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
@@ -31,17 +29,6 @@ func GetRequestBodyFromContentType(contentType string, postParams map[string]str
 			return nil, err
 		}
 		reqBody = strings.NewReader(string(postParamStr))
-
-	case "multipart/form-data":
-		var b bytes.Buffer
-		w := multipart.NewWriter(&b)
-		for key, value := range postParams {
-			if err := w.WriteField(key, value); err != nil {
-				return nil, fmt.Errorf("failed to write field %s: %v", key, err)
-			}
-		}
-		w.Close()
-		reqBody = &b
 
 	default:
 		return nil, fmt.Errorf("unsupported content type: %s", contentType)
