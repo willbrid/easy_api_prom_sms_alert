@@ -5,8 +5,8 @@ import (
 	"easy-api-prom-alert-sms/logging"
 	"easy-api-prom-alert-sms/utils"
 
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"sort"
 	"strings"
@@ -89,8 +89,9 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 }
 
 // getUrlAndBody help to get parsed url and body
-func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
-	providerParams := alertSender.config.EasyAPIPromAlertSMS.Provider.Parameters
+func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, io.Reader, error) {
+	provider := alertSender.config.EasyAPIPromAlertSMS.Provider
+	providerParams := provider.Parameters
 	postParams := map[string]string{
 		providerParams.Message.ParamName: message,
 	}
@@ -110,11 +111,11 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 	}
 
 	if err := addParam(providerParams.From, providerParams.From.ParamValue, postParams, queryParams); err != nil {
-		return "", "", err
+		return "", nil, err
 	}
 
 	if err := addParam(providerParams.To, member, postParams, queryParams); err != nil {
-		return "", "", err
+		return "", nil, err
 	}
 
 	var encodedURL string = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
@@ -122,12 +123,12 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 		encodedURL = fmt.Sprintf("%s?%s", encodedURL, queryParams.Encode())
 	}
 
-	body, err := json.Marshal(postParams)
+	body, err := utils.GetRequestBodyFromContentType(provider.ContentType, postParams)
 	if err != nil {
-		return "", "", err
+		return "", nil, err
 	}
 
-	return encodedURL, string(body), nil
+	return encodedURL, body, nil
 }
 
 func (alertSender *AlertSender) sendAlert() error {
@@ -148,6 +149,7 @@ func (alertSender *AlertSender) sendAlert() error {
 			if err := utils.SendSMSFromApi(
 				url,
 				body,
+				provider.ContentType,
 				provider.Authentication.Enabled,
 				provider.Authentication.AuthorizationType,
 				provider.Authentication.AuthorizationCredential,
