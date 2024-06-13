@@ -3,12 +3,52 @@ package utils
 import (
 	"easy-api-prom-alert-sms/logging"
 
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
+
+func GetRequestBodyFromContentType(contentType string, postParams map[string]string) (io.Reader, error) {
+	var reqBody io.Reader
+
+	switch contentType {
+	case "application/x-www-form-urlencoded":
+		data := url.Values{}
+		for key, value := range postParams {
+			data.Set(key, value)
+		}
+		reqBody = strings.NewReader(data.Encode())
+
+	case "application/json":
+		postParamStr, err := json.Marshal(postParams)
+		if err != nil {
+			return nil, err
+		}
+		reqBody = strings.NewReader(string(postParamStr))
+
+	case "multipart/form-data":
+		var b bytes.Buffer
+		w := multipart.NewWriter(&b)
+		for key, value := range postParams {
+			if err := w.WriteField(key, value); err != nil {
+				return nil, fmt.Errorf("failed to write field %s: %v", key, err)
+			}
+		}
+		w.Close()
+		reqBody = &b
+
+	default:
+		return nil, fmt.Errorf("unsupported content type: %s", contentType)
+	}
+
+	return reqBody, nil
+}
 
 // SendSMSFromApi send sms through an api specification
 func SendSMSFromApi(url string, body string, authEnable bool, authType string, authCred string, timeout time.Duration, simulation bool) error {
