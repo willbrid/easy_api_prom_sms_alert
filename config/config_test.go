@@ -161,11 +161,33 @@ easy_api_prom_sms_alert:
   provider:
     url: "http://"
 `,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    content_type: ""
+`,
+		`---
+easy_api_prom_sms_alert:
+  auth:
+    enabled: true
+    username: "xxxxx"
+    password: xxxxxxxx
+  provider:
+    url: "http://localhost:5797"
+    content_type: "xxxxx"
+`,
 	}
 
 	expectations := []string{
 		"validation failed on field 'Url' for condition 'required'",
 		"validation failed on field 'Url' for condition 'url'",
+		"validation failed on field 'ContentType' for condition 'required'",
+		"validation failed on field 'ContentType' for condition 'oneof'",
 	}
 
 	for index, configContent := range configSlices {
