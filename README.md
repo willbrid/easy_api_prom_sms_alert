@@ -41,6 +41,7 @@ easy_api_prom_sms_alert:
     password: test@test
   provider:
     url: "http://localhost:5797"
+    content_type: "application/json"
     authentication:
       enabled: false
       authorization_type: ''
@@ -103,6 +104,7 @@ easy_api_prom_sms_alert:
     password: test@test
   provider:
     url: "http://localhost:5797"
+    content_type: "application/json"
     authentication:
       enabled: false
       authorization_type: ''
@@ -236,6 +238,8 @@ easy_api_prom_sms_alert:
   provider:
     # Adresse de l'api du fournisseur
     url: "http://localhost:5797"
+    # L'entête content-type acceptée par le fournisseur
+    content_type: "application/json"
     # Paramètre d'authentification à l'api du fournisseur
     authentication:
       # Activation de l'authentification à l'api du fournisseur : 
