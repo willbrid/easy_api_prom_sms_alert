@@ -38,21 +38,26 @@ func GetRequestBodyFromContentType(contentType string, postParams map[string]str
 }
 
 // SendSMSFromApi send sms through an api specification
-func SendSMSFromApi(url string, body string, authEnable bool, authType string, authCred string, timeout time.Duration, simulation bool) error {
+func SendSMSFromApi(url string, body io.Reader, contentType string, authEnable bool, authType string, authCred string, timeout time.Duration, simulation bool) error {
+	bodyStr, err := io.ReadAll(body)
+	if err != nil {
+		return err
+	}
+
 	if simulation {
-		logging.Log(logging.Info, "successful send request with url %s and body %s", url, body)
+		logging.Log(logging.Info, "successful send request with url %s and body %s", url, string(bodyStr))
 		return nil
 	}
 
 	client := &http.Client{Timeout: timeout}
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(body))
+	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return err
 	}
 
 	req.Header.Add("accept", "application/json")
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Type", contentType)
 	if authEnable {
 		req.Header.Add("Authorization", fmt.Sprintf("%s %s", authType, authCred))
 	}
@@ -74,7 +79,7 @@ func SendSMSFromApi(url string, body string, authEnable bool, authType string, a
 		return fmt.Errorf("request failed with status : %s", resp.Status)
 	}
 
-	logging.Log(logging.Info, "successful send request with url %s and body %s", url, body)
+	logging.Log(logging.Info, "successful send request with url %s and body %s", url, string(bodyStr))
 	logging.Log(logging.Info, "response body %s", string(respBody))
 
 	return nil
