@@ -239,6 +239,7 @@ easy_api_prom_sms_alert:
     # Adresse de l'api du fournisseur
     url: "http://localhost:5797"
     # L'entête content-type acceptée par le fournisseur
+    # Valeurs possibles : "application/json", "application/x-www-form-urlencoded"
     content_type: "application/json"
     # Paramètre d'authentification à l'api du fournisseur
     authentication:
