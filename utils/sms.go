@@ -45,7 +45,7 @@ func SendSMSFromApi(url string, body io.Reader, contentType string, authEnable b
 	}
 
 	if simulation {
-		logging.Log(logging.Info, "successful send request with url %s and body %s", url, string(bodyStr))
+		logging.Log(logging.Info, "send request with url %s and body %s", url, string(bodyStr))
 		return nil
 	}
 
@@ -56,7 +56,7 @@ func SendSMSFromApi(url string, body io.Reader, contentType string, authEnable b
 		return err
 	}
 
-	req.Header.Add("accept", "application/json")
+	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", contentType)
 	if authEnable {
 		req.Header.Add("Authorization", fmt.Sprintf("%s %s", authType, authCred))
@@ -72,14 +72,15 @@ func SendSMSFromApi(url string, body io.Reader, contentType string, authEnable b
 	var respBody []byte
 	respBody, err = io.ReadAll(resp.Body)
 	if err != nil {
-		logging.Log(logging.Error, "Failed to read response body: %v", err)
+		logging.Log(logging.Error, "Failed to read response body : %v", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("request failed with status : %s", resp.Status)
+	logging.Log(logging.Info, "send request with url %s and body %s", url, string(bodyStr))
+
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusBadRequest {
+		return fmt.Errorf("request failed with status : %s and response body : %s", resp.Status, string(respBody))
 	}
 
-	logging.Log(logging.Info, "successful send request with url %s and body %s", url, string(bodyStr))
 	logging.Log(logging.Info, "response body %s", string(respBody))
 
 	return nil
