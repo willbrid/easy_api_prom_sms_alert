@@ -73,7 +73,7 @@ easy_api_prom_sms_alert:
 ./easy_api_prom_sms_alert_<VERSION>_linux_amd64 --config-file ./config.yaml
 ```
 
-Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.4**).
+Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.8**).
 
 #### Via docker
 
