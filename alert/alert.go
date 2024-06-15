@@ -6,7 +6,6 @@ import (
 	"easy-api-prom-alert-sms/utils"
 
 	"fmt"
-	"io"
 	"net/url"
 	"sort"
 	"strings"
@@ -89,7 +88,7 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 }
 
 // getUrlAndBody help to get parsed url and body
-func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, io.Reader, error) {
+func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
 	provider := alertSender.config.EasyAPIPromAlertSMS.Provider
 	providerParams := provider.Parameters
 	postParams := map[string]string{
@@ -111,11 +110,11 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 	}
 
 	if err := addParam(providerParams.From, providerParams.From.ParamValue, postParams, queryParams); err != nil {
-		return "", nil, err
+		return "", "", err
 	}
 
 	if err := addParam(providerParams.To, member, postParams, queryParams); err != nil {
-		return "", nil, err
+		return "", "", err
 	}
 
 	var encodedURL string = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
@@ -125,7 +124,7 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 
 	body, err := utils.GetRequestBodyFromContentType(provider.ContentType, postParams)
 	if err != nil {
-		return "", nil, err
+		return "", "", err
 	}
 
 	return encodedURL, body, nil
@@ -146,16 +145,7 @@ func (alertSender *AlertSender) sendAlert() error {
 				return err
 			}
 
-			if err := utils.SendSMSFromApi(
-				url,
-				body,
-				provider.ContentType,
-				provider.Authentication.Enabled,
-				provider.Authentication.AuthorizationType,
-				provider.Authentication.AuthorizationCredential,
-				provider.Timeout,
-				simulation,
-			); err != nil {
+			if err := sendSMSFromApi(url, body, simulation, provider); err != nil {
 				logging.Log(logging.Error, err.Error())
 			}
 		}
