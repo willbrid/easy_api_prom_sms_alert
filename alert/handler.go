@@ -23,7 +23,6 @@ func (alertSender *AlertSender) AlertHandler(resp http.ResponseWriter, req *http
 	go func() {
 		if err := alertSender.sendAlert(); err != nil {
 			logging.Log(logging.Error, "failed to send alert : %s", err.Error())
-			http.Error(resp, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	}()
