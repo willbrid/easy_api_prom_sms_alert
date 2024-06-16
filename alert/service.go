@@ -11,7 +11,7 @@ import (
 
 func sendSMSFromApi(url string, body string, simulation bool, provider config.Provider) error {
 	if simulation {
-		logging.Log(logging.Info, "send request with url %s and body %s", url, string(body))
+		logging.Log(logging.Info, "send request with url %s and body %s", url, body)
 		return nil
 	}
 

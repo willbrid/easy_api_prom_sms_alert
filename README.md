@@ -14,7 +14,7 @@ Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de cho
 
 ## Installation
 
-#### Via le package
+#### Via le package sous Linux
 
 ```
 cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
@@ -85,7 +85,9 @@ docker run -d -p 8000:5957 --name alert-sms-sender willbrid/easy-api-prom-sms-al
 
 Dans cet exemple, le port par défaut **5957** interne au container est mappé au port externe **8000**. 
 
---- **Installation en utilisant un volume persistent pour le fichier config.yaml et permettre sa configuration**
+--- **Installation en utilisant un volume persistent pour le fichier config.yaml**
+
+L'idée ici est de pouvoir permettre la personnalisation du fichier de configuration **config.yaml**
 
 ```
 cd $HOME && mkdir -p alert-prometheus && cd alert-prometheus
