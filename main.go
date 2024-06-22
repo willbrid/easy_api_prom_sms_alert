@@ -19,16 +19,16 @@ func main() {
 	var (
 		configFile  string
 		listenPort  int
-		enableHttps bool
+		enableHttps string
 		certFile    string
 		keyFile     string
 	)
 
 	flag.StringVar(&configFile, "config-file", "fixtures/config.default.yaml", "configuration file path")
-	flag.IntVar(&listenPort, "port", 5957, "listening port")
-	flag.BoolVar(&enableHttps, "enable-https", false, "configuration to enable https")
 	flag.StringVar(&certFile, "cert-file", "fixtures/tls/server.crt", "certificat file path")
 	flag.StringVar(&keyFile, "key-file", "fixtures/tls/server.key", "private key file path")
+	flag.StringVar(&enableHttps, "enable-https", "false", "configuration to enable https")
+	flag.IntVar(&listenPort, "port", 5957, "listening port")
 	flag.Parse()
 	validate = validator.New(validator.WithRequiredStructEnabled())
 
@@ -50,9 +50,14 @@ func main() {
 	router.Use(alertSender.AuthMiddleware)
 
 	strListenPort := strconv.Itoa(listenPort)
+	boolEnableHttps, errParse := strconv.ParseBool(enableHttps)
+	if errParse != nil {
+		logging.Log(logging.Error, "unable to parse enable-https flag")
+		return
+	}
 
 	logging.Log(logging.Info, "server is listening on port %v", strListenPort)
-	if enableHttps {
+	if boolEnableHttps {
 		logging.Log(logging.Info, "server is using https")
 		err = http.ListenAndServeTLS(":"+strListenPort, certFile, keyFile, router)
 	} else {
