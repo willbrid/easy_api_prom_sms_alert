@@ -1,0 +1,34 @@
+easy_api_prom_sms_alert:
+  simulation: true
+  auth:
+    enabled: true
+    username: test
+    password: test@test
+  provider:
+    url: "http://localhost:5797"
+    content_type: "application/json"
+    authentication:
+      enabled: false
+      authorization_type: ''
+      authorization_credential: ''
+    parameters: 
+      from: 
+        param_name: "from"
+        param_value: "+1234567890"
+        param_method: "post"
+      to:
+        param_name: "to"
+        param_value: "administration"
+        param_method: "query"
+      message: 
+        param_name: "content"
+    timeout: 10s
+  recipients: 
+  - name: "administration"
+    members:
+    - "+1234567890"
+    - "+0987654321"
+  - name: "urgence"
+    members:
+    - "+1122334455"
+    - "+5544332211"
