@@ -14,8 +14,8 @@ Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de cho
 
 ## Documentation
 
-1- [Installation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/installation.md)
-2- [Utilisation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/utilisation.md)
+1- [Installation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/installation.md) <br>
+2- [Utilisation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/utilisation.md) <br>
 3- [Fichier de configuration](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/configuration.md)
 
 ## Licence
