@@ -6,7 +6,6 @@ import (
 	"easy-api-prom-alert-sms/utils"
 
 	"fmt"
-	"net/url"
 	"sort"
 	"strings"
 	"time"
@@ -89,19 +88,21 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 
 // getUrlAndBody help to get parsed url and body
 func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
-	provider := alertSender.config.EasyAPIPromAlertSMS.Provider
-	providerParams := provider.Parameters
-	postParams := map[string]string{
-		providerParams.Message.ParamName: message,
-	}
-	queryParams := url.Values{}
+	var (
+		provider       config.Provider   = alertSender.config.EasyAPIPromAlertSMS.Provider
+		providerParams                   = provider.Parameters
+		postParams     map[string]string = map[string]string{
+			providerParams.Message.ParamName: message,
+		}
+		queryParams utils.UrlParams
+	)
 
-	addParam := func(param config.Parameter, value string, postParams map[string]string, queryParams url.Values) error {
+	addParam := func(param config.Parameter, value string, postParams map[string]string, queryParams utils.UrlParams) error {
 		switch param.ParamMethod {
 		case config.PostMethod:
 			postParams[param.ParamName] = value
 		case config.QueryMethod:
-			queryParams.Add(param.ParamName, value)
+			queryParams.AddURLParams(param.ParamName, value)
 		default:
 			return fmt.Errorf("bad provider parameter method: %s", param.ParamMethod)
 		}
@@ -117,9 +118,9 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 		return "", "", err
 	}
 
-	var encodedURL string = alertSender.config.EasyAPIPromAlertSMS.Provider.Url
+	var encodedURL string = provider.Url
 	if len(queryParams) > 0 {
-		encodedURL = fmt.Sprintf("%s?%s", encodedURL, queryParams.Encode())
+		encodedURL = fmt.Sprintf("%s?%s", encodedURL, queryParams.EncodeURLParams())
 	}
 
 	body, err := utils.GetRequestBodyFromContentType(provider.ContentType, postParams)
