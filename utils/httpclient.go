@@ -10,6 +10,16 @@ import (
 	"time"
 )
 
+const (
+	PostMethod  = "post"
+	QueryMethod = "query"
+)
+
+type HttpClientParam struct {
+	PostParams  map[string]string
+	QueryParams map[string]string
+}
+
 type Options struct {
 	Headers map[string]string
 	Timeout time.Duration
@@ -75,27 +85,47 @@ func Post(url string, body io.Reader, options Options) error {
 	return nil
 }
 
-func GetRequestBodyFromContentType(contentType string, postParams map[string]string) (string, error) {
-	var reqBody string
+func (httpClientParam HttpClientParam) AddParam(method, paramKey, paramValue string) {
+	switch method {
+	case PostMethod:
+		httpClientParam.PostParams[paramKey] = paramValue
+	case QueryMethod:
+		httpClientParam.QueryParams[paramKey] = paramValue
+	default:
+		httpClientParam.PostParams[paramKey] = paramValue
+	}
+}
+
+func (httpClientParam HttpClientParam) EncodeQueryParams() string {
+	return parseUrlParams(httpClientParam.QueryParams)
+}
+
+func (httpClientParam HttpClientParam) EncodePostParams(contentType string) (string, error) {
+	var postParams map[string]string = httpClientParam.PostParams
+	var encodedPostParams string
 
 	switch contentType {
 	case "application/x-www-form-urlencoded":
-		reqBody = ""
-		for key, value := range postParams {
-			reqBody += fmt.Sprintf("&%s=%s", key, value)
-		}
-		reqBody = reqBody[1:]
+		encodedPostParams = parseUrlParams(postParams)
 
 	case "application/json":
 		postParamStr, err := json.Marshal(postParams)
 		if err != nil {
 			return "", err
 		}
-		reqBody = string(postParamStr)
-
-	default:
-		return "", fmt.Errorf("unsupported content type: %s", contentType)
+		encodedPostParams = string(postParamStr)
 	}
 
-	return reqBody, nil
+	return encodedPostParams, nil
+}
+
+func parseUrlParams(params map[string]string) string {
+	var encodedUrlParams string
+
+	for key, value := range params {
+		encodedUrlParams += fmt.Sprintf("&%s=%s", key, value)
+	}
+	encodedUrlParams = encodedUrlParams[1:]
+
+	return encodedUrlParams
 }
