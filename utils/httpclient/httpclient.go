@@ -1,4 +1,4 @@
-package utils
+package httpclient
 
 import (
 	"easy-api-prom-alert-sms/logging"
