@@ -468,7 +468,7 @@ easy_api_prom_sms_alert:
 
 	expectations := []string{
 		"validation failed on field 'ParamValue' for condition 'required'",
-		"validation failed on field 'From' for condition 'required'",
+		"validation failed on field 'ParamValue' for condition 'required'",
 		"validation failed on field 'ParamName' for condition 'max'",
 		"validation failed on field 'ParamValue' for condition 'required'",
 		"validation failed on field 'ParamMethod' for condition 'oneof'",
