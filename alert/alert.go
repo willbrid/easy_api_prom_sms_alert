@@ -3,7 +3,7 @@ package alert
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/logging"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/httpclient"
 
 	"fmt"
 	"sort"
@@ -89,9 +89,9 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 // getUrlAndBody help to get parsed url and body
 func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
 	var (
-		provider        config.Provider       = alertSender.config.EasyAPIPromAlertSMS.Provider
-		providerParams                        = provider.Parameters
-		httpClientParam utils.HttpClientParam = utils.HttpClientParam{
+		provider        config.Provider            = alertSender.config.EasyAPIPromAlertSMS.Provider
+		providerParams                             = provider.Parameters
+		httpClientParam httpclient.HttpClientParam = httpclient.HttpClientParam{
 			PostParams: map[string]string{
 				providerParams.Message.ParamName: message,
 			},

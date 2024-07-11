@@ -3,7 +3,7 @@ package alert
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/logging"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/httpclient"
 
 	"fmt"
 	"strings"
@@ -22,7 +22,7 @@ func sendSMSFromApi(url string, body string, simulation bool, provider config.Pr
 		headers["Authorization"] = fmt.Sprintf("%s %s", provider.Authentication.AuthorizationType, provider.Authentication.AuthorizationCredential)
 	}
 
-	if err := utils.Post(url, strings.NewReader(body), utils.Options{
+	if err := httpclient.Post(url, strings.NewReader(body), httpclient.Options{
 		Headers: headers,
 		Timeout: provider.Timeout,
 	}); err != nil {

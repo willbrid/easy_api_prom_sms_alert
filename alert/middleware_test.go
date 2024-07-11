@@ -2,7 +2,7 @@ package alert
 
 import (
 	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/file"
 
 	"io"
 	"net/http"
@@ -89,7 +89,7 @@ const body string = `
 `
 
 func triggerTest(t *testing.T, statusCode int, credential string, reqBody io.Reader) {
-	filename, err := utils.CreateConfigFileForTesting(configContent)
+	filename, err := file.CreateConfigFileForTesting(configContent)
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
