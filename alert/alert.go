@@ -3,7 +3,7 @@ package alert
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/logging"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/httpclient"
 
 	"fmt"
 	"sort"
@@ -89,9 +89,9 @@ func (alertSender *AlertSender) getRecipientMembers(recipientName string) []stri
 // getUrlAndBody help to get parsed url and body
 func (alertSender *AlertSender) getUrlAndBody(member string, message string) (string, string, error) {
 	var (
-		provider        config.Provider       = alertSender.config.EasyAPIPromAlertSMS.Provider
-		providerParams                        = provider.Parameters
-		httpClientParam utils.HttpClientParam = utils.HttpClientParam{
+		provider        config.Provider            = alertSender.config.EasyAPIPromAlertSMS.Provider
+		providerParams                             = provider.Parameters
+		httpClientParam httpclient.HttpClientParam = httpclient.HttpClientParam{
 			PostParams: map[string]string{
 				providerParams.Message.ParamName: message,
 			},
@@ -101,6 +101,11 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 
 	httpClientParam.AddParam(providerParams.From.ParamMethod, providerParams.From.ParamName, providerParams.From.ParamValue)
 	httpClientParam.AddParam(providerParams.To.ParamMethod, providerParams.To.ParamName, member)
+	if len(providerParams.ExtraParams) > 0 {
+		for _, extraParam := range providerParams.ExtraParams {
+			httpClientParam.AddParam(extraParam.ParamMethod, extraParam.ParamName, extraParam.ParamValue)
+		}
+	}
 
 	var encodedURL string = provider.Url
 	if len(httpClientParam.QueryParams) > 0 {

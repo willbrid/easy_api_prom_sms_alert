@@ -1,7 +1,7 @@
 package config
 
 import (
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/file"
 
 	"fmt"
 	"os"
@@ -74,7 +74,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}
@@ -120,7 +120,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}
@@ -192,7 +192,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}
@@ -276,7 +276,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}
@@ -468,7 +468,7 @@ easy_api_prom_sms_alert:
 
 	expectations := []string{
 		"validation failed on field 'ParamValue' for condition 'required'",
-		"validation failed on field 'From' for condition 'required'",
+		"validation failed on field 'ParamValue' for condition 'required'",
 		"validation failed on field 'ParamName' for condition 'max'",
 		"validation failed on field 'ParamValue' for condition 'required'",
 		"validation failed on field 'ParamMethod' for condition 'oneof'",
@@ -480,7 +480,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}
@@ -622,7 +622,7 @@ easy_api_prom_sms_alert:
 
 	for index, configContent := range configSlices {
 		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := utils.CreateConfigFileForTesting(configContent)
+			filename, err := file.CreateConfigFileForTesting(configContent)
 			if err != nil {
 				t.Fatalf(err.Error())
 			}

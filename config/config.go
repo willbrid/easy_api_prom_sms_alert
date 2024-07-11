@@ -2,7 +2,7 @@ package config
 
 import (
 	"easy-api-prom-alert-sms/logging"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/httpclient"
 
 	"fmt"
 	"time"
@@ -33,9 +33,10 @@ type Provider struct {
 		AuthorizationCredential string `mapstructure:"authorization_credential" validate:"required_if=Enabled true"`
 	} `mapstructure:"authentication"`
 	Parameters struct {
-		From    Parameter `mapstructure:"from" validate:"required"`
-		To      Parameter `mapstructure:"to" validate:"required"`
-		Message Parameter `mapstructure:"message" validate:"required"`
+		From        Parameter   `mapstructure:"from" validate:"required"`
+		To          Parameter   `mapstructure:"to" validate:"required"`
+		Message     Parameter   `mapstructure:"message" validate:"required"`
+		ExtraParams []Parameter `mapstructure:"extra_params"`
 	} `mapstructure:"parameters" validate:"required"`
 }
 
@@ -66,13 +67,14 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization_credential", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_name", "from")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_value", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", "")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", httpclient.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_name", "to")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "")
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", httpclient.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "content")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", "<%message%>") // The templating feature will be implement later
-	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_method", utils.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", httpclient.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.extra_params", make([]Parameter, 0))
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make([]Recipient, 0))
 }
