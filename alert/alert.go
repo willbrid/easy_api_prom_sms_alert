@@ -101,6 +101,11 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 
 	httpClientParam.AddParam(providerParams.From.ParamMethod, providerParams.From.ParamName, providerParams.From.ParamValue)
 	httpClientParam.AddParam(providerParams.To.ParamMethod, providerParams.To.ParamName, member)
+	if len(providerParams.ExtraParams) > 0 {
+		for _, extraParam := range providerParams.ExtraParams {
+			httpClientParam.AddParam(extraParam.ParamMethod, extraParam.ParamName, extraParam.ParamValue)
+		}
+	}
 
 	var encodedURL string = provider.Url
 	if len(httpClientParam.QueryParams) > 0 {
