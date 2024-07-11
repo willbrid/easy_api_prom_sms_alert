@@ -2,7 +2,7 @@ package config
 
 import (
 	"easy-api-prom-alert-sms/logging"
-	"easy-api-prom-alert-sms/utils"
+	"easy-api-prom-alert-sms/utils/httpclient"
 
 	"fmt"
 	"time"
@@ -72,7 +72,7 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", "<%message%>") // The templating feature will be implement later
-	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_method", utils.PostMethod)
+	v.Set("easy_api_prom_sms_alert.provider.parameters.message.param_method", httpclient.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make([]Recipient, 0))
 }
