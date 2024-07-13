@@ -93,7 +93,7 @@ func (alertSender *AlertSender) getUrlAndBody(member string, message string) (st
 		providerParams                             = provider.Parameters
 		httpClientParam httpclient.HttpClientParam = httpclient.HttpClientParam{
 			PostParams: map[string]string{
-				providerParams.Message.ParamName: message,
+				providerParams.Message.ParamName: strings.ReplaceAll(providerParams.Message.ParamValue, config.AlertMessageTemplate, message),
 			},
 			QueryParams: map[string]string{},
 		}

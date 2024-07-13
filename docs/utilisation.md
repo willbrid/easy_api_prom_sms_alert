@@ -67,9 +67,9 @@ receivers:
   - url: 'https://localhost:8000/api-alert'
     send_resolved: false
     http_config: 
-      authorization:
-        type: "Basic"
-        credentials: dGVzdDp0ZXN0QHRlc3Q= # Base64 de la chaine username:password
+      basic_auth:
+        username: test
+        password: test@test
       tls_config:
         insecure_skip_verify: true
 ```

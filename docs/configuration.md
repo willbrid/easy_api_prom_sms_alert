@@ -59,8 +59,8 @@ easy_api_prom_sms_alert:
       message:
         # Nom du champ du contenu du SMS
         param_name: "content"
-    # Paramètre de timeout à définir pour consommer l'api du fournisseur  
-    timeout: 0s
+    # Paramètre de timeout à définir pour consommer l'api du fournisseur  (par défaut : 10s)
+    timeout: 10s
 
   # Paramètre des différents destinataires qui recevront les SMS
   recipients:

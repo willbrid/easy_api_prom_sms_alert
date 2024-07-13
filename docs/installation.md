@@ -45,7 +45,7 @@ easy_api_prom_sms_alert:
         param_method: "query"
       message: 
         param_name: "content"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "administration"
     members:
@@ -61,7 +61,7 @@ easy_api_prom_sms_alert:
 ./easy_api_prom_sms_alert_<VERSION>_linux_amd64 --config-file ./config.yaml
 ```
 
-Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.1.8**).
+Remplacez **\<VERSION\>** par le numéro de version souhaité (supérieur ou égal à **1.2.3**).
 
 #### Via docker
 
@@ -110,7 +110,7 @@ easy_api_prom_sms_alert:
         param_method: "query"
       message: 
         param_name: "content"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "administration"
     members:

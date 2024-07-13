@@ -438,28 +438,6 @@ easy_api_prom_sms_alert:
       to:
         param_name: "xxxxx"
         param_method: "post"
-        param_value: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
-		`---
-easy_api_prom_sms_alert:
-  auth:
-    enabled: true
-    username: "xxxxx"
-    password: xxxxxxxx
-  provider:
-    url: "http://localhost:5797"
-    authentication:
-      enabled: true
-      authorization_type: "xxxxx"
-      authorization_credential: "xxxxx"
-    parameters:
-      from:
-        param_name: "xxxxx"
-        param_method: "query"
-        param_value: "xxxxx"
-      to:
-        param_name: "xxxxx"
-        param_method: "post"
         param_value: "xxxxx"
       message:
         param_name: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -474,7 +452,6 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'ParamMethod' for condition 'oneof'",
 		"validation failed on field 'ParamName' for condition 'max'",
 		"validation failed on field 'ParamValue' for condition 'required'",
-		"validation failed on field 'ParamValue' for condition 'max'",
 		"validation failed on field 'ParamName' for condition 'max'",
 	}
 

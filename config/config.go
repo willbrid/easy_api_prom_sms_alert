@@ -19,7 +19,7 @@ type Auth struct {
 
 type Parameter struct {
 	ParamName   string `mapstructure:"param_name" validate:"required,max=25"`
-	ParamValue  string `mapstructure:"param_value" validate:"required,max=25"`
+	ParamValue  string `mapstructure:"param_value" validate:"required"`
 	ParamMethod string `mapstructure:"param_method" validate:"required,oneof=post query"`
 }
 
@@ -54,6 +54,8 @@ type Config struct {
 	} `mapstructure:"easy_api_prom_sms_alert"`
 }
 
+const AlertMessageTemplate string = "<%message%>"
+
 // SetConfigDefaults sets defaults configurations values
 func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.simulation", true)
@@ -72,7 +74,7 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", httpclient.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "content")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", "<%message%>") // The templating feature will be implement later
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", AlertMessageTemplate)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", httpclient.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.extra_params", make([]Parameter, 0))
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
