@@ -19,7 +19,7 @@ type Auth struct {
 
 type Parameter struct {
 	ParamName   string `mapstructure:"param_name" validate:"required,max=25"`
-	ParamValue  string `mapstructure:"param_value" validate:"required,max=25"`
+	ParamValue  string `mapstructure:"param_value" validate:"required"`
 	ParamMethod string `mapstructure:"param_method" validate:"required,oneof=post query"`
 }
 
