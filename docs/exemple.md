@@ -225,7 +225,7 @@ easy_api_prom_sms_alert:
         param_method: "post"
       message: 
         param_name: "Body"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "urgence"
     members:
@@ -266,7 +266,7 @@ easy_api_prom_sms_alert:
         param_method: "post"
       message: 
         param_name: "message"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "urgence"
     members:
@@ -284,9 +284,9 @@ easy_api_prom_sms_alert:
 ```
 podman run -d --net=host \
        --name alert-sms-sender \
-       -v $HOME/monitoring/alert/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml:z 
-       -e EASY_API_PROM_SMS_ALERT_PORT=5957 
-       -e EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS=true 
+       -v $HOME/monitoring/alert/config.yaml:/etc/easy-api-prom-sms-alert/config.yaml:z \
+       -e EASY_API_PROM_SMS_ALERT_PORT=5957 \
+       -e EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS=true \ 
        willbrid/easy-api-prom-sms-alert:latest
 ```
 
