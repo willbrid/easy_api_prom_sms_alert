@@ -45,7 +45,7 @@ easy_api_prom_sms_alert:
         param_method: "query"
       message: 
         param_name: "content"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "administration"
     members:
@@ -110,7 +110,7 @@ easy_api_prom_sms_alert:
         param_method: "query"
       message: 
         param_name: "content"
-    timeout: 0s
+    timeout: 10s
   recipients: 
   - name: "administration"
     members:
