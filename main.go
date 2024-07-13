@@ -39,7 +39,7 @@ func main() {
 
 	configLoaded, err := config.LoadConfig(configFile, validate)
 	if err != nil {
-		logging.Log(logging.Error, "error loading configuration")
+		logging.Log(logging.Error, err.Error())
 		return
 	}
 	logging.Log(logging.Info, "configuration file '%s' was loaded successfully", configFile)
