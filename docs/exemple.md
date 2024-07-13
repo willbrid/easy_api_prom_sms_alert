@@ -77,7 +77,7 @@ podman run -d --net="host" \
 ##### Mise en place d'alertmanager
 
 ```
-mkdir -p $HOME/monitoring/alertmanager && mdkir $HOME/monitoring/alertmanager/data && cd $HOME/monitoring/alertmanager
+mkdir -p $HOME/monitoring/alertmanager && mkdir $HOME/monitoring/alertmanager/data && cd $HOME/monitoring/alertmanager
 ```
 
 ```
@@ -95,9 +95,9 @@ receivers:
   - url: 'https://192.168.56.211:5797/api-alert'
     send_resolved: false
     http_config: 
-      authorization:
-        type: "Basic"
-        credentials: dGVzdDp0ZXN0QHRlc3Q=
+      basic_auth:
+        username: test
+        password: test@test
       tls_config:
         insecure_skip_verify: true
 ```
@@ -115,7 +115,7 @@ podman run -d --net=host \
 ##### Mise en place de Prometheus
 
 ```
-mkdir -p $HOME/monitoring/prometheus && mdkir $HOME/monitoring/prometheus/data && mdkir $HOME/monitoring/prometheus/rules && cd $HOME/monitoring/prometheus
+mkdir -p $HOME/monitoring/prometheus && mkdir $HOME/monitoring/prometheus/data && mkdir $HOME/monitoring/prometheus/rules && cd $HOME/monitoring/prometheus
 ```
 
 ```
@@ -162,6 +162,7 @@ groups:
     for: 1m
     labels:
       severity: critical
+      team: urgence
     annotations:
       summary: "Node is down"
       description: "The node has been down for the last 1 minute."
