@@ -5,7 +5,7 @@ easy_api_prom_sms_alert:
     username: test
     password: test@test
   provider:
-    url: "http://localhost:5797"
+    url: "http://localhost:5957"
     content_type: "application/json"
     authentication:
       enabled: false
