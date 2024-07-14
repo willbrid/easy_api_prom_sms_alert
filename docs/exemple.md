@@ -2,7 +2,7 @@
 
 ### Mise en place d'une sandbox
 
-Nous mettrons en place un serveur vagrant **Rocky linux 8** sous une machine hôte Ubuntu 20.04 (ou plus) avec déjà **virtualbox7** et **vagrant** installé.
+Nous mettrons en place un serveur vagrant **Rocky linux 8** sous une machine hôte Ubuntu 20.04 (ou >= 20.04) avec les outils **virtualbox7** et **vagrant** déjà installés.
 
 ```
 mkdir $HOME/easy_api_prom_sms_alert && cd $HOME/easy_api_prom_sms_alert
@@ -53,10 +53,10 @@ vagrant up
 ### Installation de prometheus, alertmanager, node-exporter et easy_api_prom_sms_alert sur notre serveur monitoring-server
 
 Dans cette section, nous allons installer sous forme conteneurisée sur le serveur vagrant **monitoring-server** : 
-- **prometheus** : pour le monitoring
-- **alertmanager** : pour recevoir les alertes prometheus et déclenchées les notifications
+- **prometheus** : pour le monitoring du serveur
+- **alertmanager** : pour recevoir les alertes prometheus et déclencher les notifications
 - **node-exporter** : pour collecter les métriques systèmes sur le serveur vagrant **monitoring-server**
-- **easy_api_prom_sms_alert** : webhook qui sera configuré au niveau d'alertmanager qui lui permettra d'envoyer des alertes SMS
+- **easy_api_prom_sms_alert** : pour le webhook qui sera configuré au niveau d'**alertmanager** qui lui permettra d'envoyer des alertes SMS
 
 ```
 vagrant ssh monitoring-server
