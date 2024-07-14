@@ -59,6 +59,15 @@ easy_api_prom_sms_alert:
       message:
         # Nom du champ du contenu du SMS
         param_name: "content"
+      # Paramètres supplémentaires du fournisseur. Ils peuvent être obligatoires ou non selon les spécifications d'intégration du fournisseur
+      # Les valeurs ci-dessous sont des exemples. Il faudrait lire la documentation du fournisseur pour mieux configurer
+      extra_params:
+      - param_name: "pn1"
+        param_value: "pv1"
+        param_method: "post"
+      - param_name: "pn2"
+        param_value: "pv2"
+        param_method: "query"
     # Paramètre de timeout à définir pour consommer l'api du fournisseur  (par défaut : 10s)
     timeout: 10s
 
