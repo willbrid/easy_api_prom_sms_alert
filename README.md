@@ -1,6 +1,6 @@
 # Easy_api_prom_sms_alert
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE)
 
 **Easy_api_prom_sms_alert** est un webhook pour prometheus permettant d'envoyer des alertes sms avec n'importe quel fournisseur de sms exposant une api.
 
@@ -21,4 +21,4 @@ Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de cho
 
 ## Licence
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](https://opensource.org/licenses/MIT) pour plus de détails.
+Ce projet est sous licence MIT - voir le fichier [LICENSE](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE) pour plus de détails.
