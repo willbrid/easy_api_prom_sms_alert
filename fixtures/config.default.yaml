@@ -7,6 +7,7 @@ easy_api_prom_sms_alert:
   provider:
     url: "http://localhost:5957"
     content_type: "application/json"
+    insecure_skip_verify: false
     authentication:
       enabled: false
       authorization_type: ''
