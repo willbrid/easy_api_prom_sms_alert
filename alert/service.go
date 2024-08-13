@@ -23,8 +23,9 @@ func sendSMSFromApi(url string, body string, simulation bool, provider config.Pr
 	}
 
 	if err := httpclient.Post(url, strings.NewReader(body), httpclient.Options{
-		Headers: headers,
-		Timeout: provider.Timeout,
+		Headers:            headers,
+		Timeout:            provider.Timeout,
+		InsecureSkipVerify: provider.InsecureSkipVerify,
 	}); err != nil {
 		return err
 	}
