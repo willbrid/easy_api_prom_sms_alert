@@ -24,6 +24,10 @@ easy_api_prom_sms_alert:
     # L'entête content-type acceptée par le fournisseur
     # Valeurs possibles : "application/json", "application/x-www-form-urlencoded"
     content_type: "application/json"
+    # Paramètre d'activation de la vérification de certificat
+    # - true -> le certificat de l'api en https du fournisseur ne sera pas vérifié
+    # - false -> le certificat de l'api en https du fournisseur sera vérifié (valeur par défaut)
+    insecure_skip_verify: false
     # Paramètre d'authentification à l'api du fournisseur
     authentication:
       # Activation de l'authentification à l'api du fournisseur : 
