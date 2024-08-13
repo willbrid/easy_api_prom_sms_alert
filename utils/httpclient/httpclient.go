@@ -1,6 +1,7 @@
 package httpclient
 
 import (
+	"crypto/tls"
 	"easy-api-prom-alert-sms/logging"
 
 	"encoding/json"
@@ -21,8 +22,9 @@ type HttpClientParam struct {
 }
 
 type Options struct {
-	Headers map[string]string
-	Timeout time.Duration
+	Headers            map[string]string
+	Timeout            time.Duration
+	InsecureSkipVerify bool
 }
 
 var httpClient *http.Client
@@ -47,6 +49,8 @@ func createHTTPClient() *http.Client {
 
 func Post(url string, body io.Reader, options Options) error {
 	httpClient.Timeout = options.Timeout
+	transport := httpClient.Transport.(*http.Transport)
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: options.InsecureSkipVerify}
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
