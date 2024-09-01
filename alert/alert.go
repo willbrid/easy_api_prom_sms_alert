@@ -136,9 +136,11 @@ func (alertSender *AlertSender) sendAlert() error {
 				return err
 			}
 
-			if err := sendSMSFromApi(url, body, simulation, provider); err != nil {
-				logging.Log(logging.Error, err.Error())
-			}
+			go func() {
+				if err := sendSMSFromApi(url, body, simulation, provider); err != nil {
+					logging.Log(logging.Error, err.Error())
+				}
+			}()
 		}
 	}
 
