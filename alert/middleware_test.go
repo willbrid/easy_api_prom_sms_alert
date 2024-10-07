@@ -1,6 +1,7 @@
-package alert
+package alert_test
 
 import (
+	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/utils/file"
 
@@ -91,16 +92,16 @@ const body string = `
 func triggerTest(t *testing.T, statusCode int, credential string, reqBody io.Reader) {
 	filename, err := file.CreateConfigFileForTesting(configContent)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err.Error())
 	}
 	defer os.Remove(filename)
 
 	configLoaded, err := config.LoadConfig(filename, validate)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err.Error())
 	}
 
-	alertSender := NewAlertSender(configLoaded)
+	alertSender := alert.NewAlertSender(configLoaded)
 
 	req, err := http.NewRequest("POST", "/api-alert", reqBody)
 	if err != nil {
@@ -123,23 +124,25 @@ func triggerTest(t *testing.T, statusCode int, credential string, reqBody io.Rea
 	}
 }
 
-func TestNoAuthorizationHeaderAuthMiddleware(t *testing.T) {
-	triggerTest(t, http.StatusUnauthorized, "", nil)
-}
+func TestAuthentication(t *testing.T) {
+	t.Run("No authorization header", func(t *testing.T) {
+		triggerTest(t, http.StatusUnauthorized, "", nil)
+	})
 
-func TestInvalidAuthorizationHeaderAuthMiddleware(t *testing.T) {
-	triggerTest(t, http.StatusUnauthorized, "xxxxx", nil)
-}
+	t.Run("Invalid authorization header", func(t *testing.T) {
+		triggerTest(t, http.StatusUnauthorized, "xxxxx", nil)
+	})
 
-func TestFailedToDecodeBase64TokenAuthMiddleware(t *testing.T) {
-	triggerTest(t, http.StatusUnauthorized, "Basic xxxxx", nil)
-}
+	t.Run("Failed to decode base64 token", func(t *testing.T) {
+		triggerTest(t, http.StatusUnauthorized, "Basic xxxxx", nil)
+	})
 
-func TestInvalidUsernameOrPasswordAuthMiddleware(t *testing.T) {
-	triggerTest(t, http.StatusUnauthorized, "Basic eHh4eHg6eHh4", nil)
-}
+	t.Run("Invalid username or password", func(t *testing.T) {
+		triggerTest(t, http.StatusUnauthorized, "Basic eHh4eHg6eHh4", nil)
+	})
 
-func TestCorrectUsernameAndPasswordAuthMiddleware(t *testing.T) {
-	bodyReader := strings.NewReader(body)
-	triggerTest(t, http.StatusNoContent, "Basic eHh4eHg6eHh4eHh4eHg=", bodyReader)
+	t.Run("Correct username and password", func(t *testing.T) {
+		bodyReader := strings.NewReader(body)
+		triggerTest(t, http.StatusNoContent, "Basic eHh4eHg6eHh4eHh4eHg=", bodyReader)
+	})
 }
