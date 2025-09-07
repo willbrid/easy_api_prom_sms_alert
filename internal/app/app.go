@@ -3,10 +3,13 @@ package app
 import (
 	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
+	"easy-api-prom-alert-sms/pkg/httpserver"
 	"easy-api-prom-alert-sms/pkg/logger"
 
 	"fmt"
-	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/gorilla/mux"
 )
@@ -20,23 +23,38 @@ func NewApp(l *logger.Logger) *App {
 }
 
 func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	var err error
-
 	alertSender := alert.NewAlertSender(cfgfile)
 	router := mux.NewRouter()
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
 	router.Use(alertSender.AuthMiddleware)
 
-	app.logger.Info("server is listening on port %v", cfgflag.ListenPort)
+	httpServer := httpserver.NewServer(
+		router,
+		fmt.Sprint(":"+fmt.Sprint(cfgflag.ListenPort)),
+		cfgflag.EnableHttps,
+		cfgflag.CertFile,
+		cfgflag.KeyFile,
+	)
+	httpServer.Start()
+	var logInfoServer string
 	if cfgflag.EnableHttps {
-		app.logger.Info("server is using https")
-		err = http.ListenAndServeTLS(":"+fmt.Sprint(cfgflag.ListenPort), cfgflag.CertFile, cfgflag.KeyFile, router)
+		logInfoServer = "app server is listening on port %v using https"
 	} else {
-		app.logger.Info("server is using http")
-		err = http.ListenAndServe(":"+fmt.Sprint(cfgflag.ListenPort), router)
+		logInfoServer = "app server is listening on port %v using http"
+	}
+	app.logger.Info(logInfoServer, cfgflag.ListenPort)
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case s := <-interrupt:
+		app.logger.Info("app server - run - signal: %s", s.String())
+	case err := <-httpServer.Notify():
+		app.logger.Error("app server error: %v", err.Error())
 	}
 
-	if err != nil {
-		app.logger.Error("failed to start server: %v", err.Error())
+	if err := httpServer.Stop(); err != nil {
+		app.logger.Error("app server - stop - error: %v", err)
 	}
 }
