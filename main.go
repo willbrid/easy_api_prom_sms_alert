@@ -39,13 +39,13 @@ func main() {
 
 	viperInstance, err := config.ReadConfigFile(configFile)
 	if err != nil {
-		logging.Log(logging.Error, err.Error())
+		logging.Log(logging.Error, "%s", err.Error())
 		return
 	}
 
 	configLoaded, err := config.LoadConfig(viperInstance, validate)
 	if err != nil {
-		logging.Log(logging.Error, err.Error())
+		logging.Log(logging.Error, "%s", err.Error())
 		return
 	}
 	logging.Log(logging.Info, "configuration file '%s' was loaded successfully", configFile)

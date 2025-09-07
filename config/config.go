@@ -94,7 +94,7 @@ func ReadConfigFile(filename string) (*viper.Viper, error) {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			return nil, fmt.Errorf("configuration file '%s' not found", filename)
 		} else {
-			logging.Log(logging.Error, err.Error())
+			logging.Log(logging.Error, "%s", err.Error())
 			return nil, err
 		}
 	}
@@ -110,7 +110,7 @@ func LoadConfig(viperInstance *viper.Viper, validate *validator.Validate) (*Conf
 	// Parse configuration file to Config struct
 	var config Config
 	if err := viperInstance.Unmarshal(&config); err != nil {
-		logging.Log(logging.Error, err.Error())
+		logging.Log(logging.Error, "%s", err.Error())
 		return nil, err
 	}
 
