@@ -83,29 +83,33 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make([]Recipient, 0))
 }
 
-// LoadConfig load yaml configuration file
-func LoadConfig(filename string, validate *validator.Validate) (*Config, error) {
-	// Load configuration file
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile(filename)
+func ReadConfigFile(filename string) (*viper.Viper, error) {
+	var viperInstance *viper.Viper = viper.New()
 
-	if err := viper.ReadInConfig(); err != nil {
+	// Load configuration file
+	viperInstance.SetConfigType("yaml")
+	viperInstance.SetConfigFile(filename)
+
+	if err := viperInstance.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			logging.Log(logging.Error, err.Error())
-			return nil, err
+			return nil, fmt.Errorf("configuration file '%s' not found", filename)
 		} else {
 			logging.Log(logging.Error, err.Error())
 			return nil, err
 		}
 	}
 
-	var viperInstance *viper.Viper = viper.GetViper()
+	return viperInstance, nil
+}
+
+// LoadConfig load yaml configuration file
+func LoadConfig(viperInstance *viper.Viper, validate *validator.Validate) (*Config, error) {
 	// Set defaut configuration
 	setConfigDefaults(viperInstance)
 
 	// Parse configuration file to Config struct
 	var config Config
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := viperInstance.Unmarshal(&config); err != nil {
 		logging.Log(logging.Error, err.Error())
 		return nil, err
 	}
