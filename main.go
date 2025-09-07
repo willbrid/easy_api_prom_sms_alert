@@ -37,7 +37,13 @@ func main() {
 		return
 	}
 
-	configLoaded, err := config.LoadConfig(configFile, validate)
+	viperInstance, err := config.ReadConfigFile(configFile)
+	if err != nil {
+		logging.Log(logging.Error, err.Error())
+		return
+	}
+
+	configLoaded, err := config.LoadConfig(viperInstance, validate)
 	if err != nil {
 		logging.Log(logging.Error, err.Error())
 		return
