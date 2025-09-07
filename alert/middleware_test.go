@@ -3,22 +3,21 @@ package alert_test
 import (
 	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/utils/file"
 
+	"bytes"
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 )
 
-var validate *validator.Validate = validator.New(validator.WithRequiredStructEnabled())
-
-const configContent string = `---
+var yamlConfig []byte = []byte(`
+---
 easy_api_prom_sms_alert:
   simulation: true
   auth:
@@ -46,7 +45,7 @@ easy_api_prom_sms_alert:
   - name: "admin"
     members:
     - "xxxxxxxxxx"
-`
+`)
 
 const body string = `
 {
@@ -90,13 +89,15 @@ const body string = `
 `
 
 func triggerTest(t *testing.T, statusCode int, credential string, reqBody io.Reader) {
-	filename, err := file.CreateConfigFileForTesting(configContent)
-	if err != nil {
+	v := viper.New()
+	v.SetConfigType("yaml")
+
+	if err := v.ReadConfig(bytes.NewBuffer([]byte(yamlConfig))); err != nil {
 		t.Fatal(err.Error())
 	}
-	defer os.Remove(filename)
 
-	configLoaded, err := config.LoadConfig(filename, validate)
+	var validate *validator.Validate = validator.New(validator.WithRequiredStructEnabled())
+	configLoaded, err := config.LoadConfig(v, validate)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -124,25 +125,33 @@ func triggerTest(t *testing.T, statusCode int, credential string, reqBody io.Rea
 	}
 }
 
-func TestAuthentication(t *testing.T) {
-	t.Run("No authorization header", func(t *testing.T) {
-		triggerTest(t, http.StatusUnauthorized, "", nil)
-	})
+func TestAuthentication_NoAuthorizationHeader(t *testing.T) {
+	t.Parallel()
 
-	t.Run("Invalid authorization header", func(t *testing.T) {
-		triggerTest(t, http.StatusUnauthorized, "xxxxx", nil)
-	})
+	triggerTest(t, http.StatusUnauthorized, "", nil)
+}
 
-	t.Run("Failed to decode base64 token", func(t *testing.T) {
-		triggerTest(t, http.StatusUnauthorized, "Basic xxxxx", nil)
-	})
+func TestAuthentication_InvalidAuthorizationHeader(t *testing.T) {
+	t.Parallel()
 
-	t.Run("Invalid username or password", func(t *testing.T) {
-		triggerTest(t, http.StatusUnauthorized, "Basic eHh4eHg6eHh4", nil)
-	})
+	triggerTest(t, http.StatusUnauthorized, "xxxxx", nil)
+}
 
-	t.Run("Correct username and password", func(t *testing.T) {
-		bodyReader := strings.NewReader(body)
-		triggerTest(t, http.StatusNoContent, "Basic eHh4eHg6eHh4eHh4eHg=", bodyReader)
-	})
+func TestAuthentication_FailedToDecodeBase64Token(t *testing.T) {
+	t.Parallel()
+
+	triggerTest(t, http.StatusUnauthorized, "Basic xxxxx", nil)
+}
+
+func TestAuthentication_InvalidUsernameOrPassword(t *testing.T) {
+	t.Parallel()
+
+	triggerTest(t, http.StatusUnauthorized, "Basic eHh4eHg6eHh4", nil)
+}
+
+func TestAuthentication_CorrectUsernameOrPassword(t *testing.T) {
+	t.Parallel()
+
+	bodyReader := strings.NewReader(body)
+	triggerTest(t, http.StatusNoContent, "Basic eHh4eHg6eHh4eHh4eHg=", bodyReader)
 }
