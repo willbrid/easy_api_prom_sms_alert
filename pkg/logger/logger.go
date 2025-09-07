@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type LoggerInterface interface {
+type ILogger interface {
 	Info(message string, args ...any)
 	Warning(message string, args ...any)
 	Error(message string, args ...any)
