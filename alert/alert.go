@@ -62,9 +62,10 @@ func (alertSender *AlertSender) getMsgFromAlert(alert template.Alert) string {
 		message += "description: " + description + "\n"
 	}
 
-	if alert.Status == "firing" {
+	switch alert.Status {
+	case "firing":
 		message += "Started: " + alert.StartsAt.Format(time.RFC822)
-	} else if alert.Status == "resolved" {
+	case "resolved":
 		message += "Resolved: " + alert.EndsAt.Format(time.RFC822)
 	}
 
