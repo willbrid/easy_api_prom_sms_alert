@@ -1,8 +1,6 @@
 package config
 
 import (
-	"easy-api-prom-alert-sms/logging"
-
 	"flag"
 	"strconv"
 
@@ -10,14 +8,14 @@ import (
 )
 
 type ConfigFlag struct {
-	ConfigFile  string
-	ListenPort  string
+	ConfigFile  string `validate:"required"`
+	ListenPort  int    `validate:"required,gte=1024,lte=49151"`
 	EnableHttps bool
-	CertFile    string
-	KeyFile     string
+	CertFile    string `validate:"required_if=EnableHttps true"`
+	KeyFile     string `validate:"required_if=EnableHttps true"`
 }
 
-func newConfigFlag(configFile string, listenPort string, enableHttps bool, certFile string, keyFile string) *ConfigFlag {
+func newConfigFlag(configFile string, listenPort int, enableHttps bool, certFile string, keyFile string) *ConfigFlag {
 	return &ConfigFlag{configFile, listenPort, enableHttps, certFile, keyFile}
 }
 
@@ -37,16 +35,15 @@ func LoadConfigFlag(validate *validator.Validate) (*ConfigFlag, error) {
 	flag.IntVar(&listenPort, "port", 5957, "listening port")
 	flag.Parse()
 
-	if err := validate.Var(listenPort, "required,min=1024,max=49151"); err != nil {
-		logging.Log(logging.Error, "you should provide a port number between 1024 and 49151")
-		return nil, err
-	}
-
 	boolEnableHttps, err := strconv.ParseBool(enableHttps)
 	if err != nil {
-		logging.Log(logging.Error, "unable to parse enable-https flag")
 		return nil, err
 	}
 
-	return newConfigFlag(configFile, strconv.Itoa(listenPort), boolEnableHttps, certFile, keyFile), nil
+	cfgflag := newConfigFlag(configFile, listenPort, boolEnableHttps, certFile, keyFile)
+	if err := validate.Struct(cfgflag); err != nil {
+		return nil, err
+	}
+
+	return cfgflag, nil
 }
