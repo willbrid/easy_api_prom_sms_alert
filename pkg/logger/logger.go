@@ -19,14 +19,16 @@ const (
 	Info LogLevel = iota
 	Warning
 	Error
+	Fatal
 )
 
-const DefaultCallerDepth = 1
+const DefaultCallerDepth = 2
 
 var logLevels = map[LogLevel]string{
 	Info:    "INFO",
 	Warning: "WARNING",
 	Error:   "ERROR",
+	Fatal:   "FATAL",
 }
 
 func NewLogger() *Logger {
@@ -63,4 +65,10 @@ func (l *Logger) Warning(message string, args ...any) {
 
 func (l *Logger) Error(message string, args ...any) {
 	l.msg(Error, message, args...)
+}
+
+func (l *Logger) Fatal(message string, args ...any) {
+	l.msg(Fatal, message, args...)
+
+	os.Exit(1)
 }

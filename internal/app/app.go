@@ -3,7 +3,7 @@ package app
 import (
 	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/logging"
+	"easy-api-prom-alert-sms/pkg/logger"
 
 	"net/http"
 
@@ -11,6 +11,8 @@ import (
 )
 
 func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
+	l := logger.NewLogger()
+
 	var err error
 
 	alertSender := alert.NewAlertSender(cfgfile)
@@ -18,16 +20,16 @@ func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
 	router.Use(alertSender.AuthMiddleware)
 
-	logging.Log(logging.Info, "server is listening on port %v", cfgflag.ListenPort)
+	l.Info("server is listening on port %v", cfgflag.ListenPort)
 	if cfgflag.EnableHttps {
-		logging.Log(logging.Info, "server is using https")
+		l.Info("server is using https")
 		err = http.ListenAndServeTLS(":"+cfgflag.ListenPort, cfgflag.CertFile, cfgflag.KeyFile, router)
 	} else {
-		logging.Log(logging.Info, "server is using http")
+		l.Info("server is using http")
 		err = http.ListenAndServe(":"+cfgflag.ListenPort, router)
 	}
 
 	if err != nil {
-		logging.Log(logging.Error, "failed to start server: %v", err.Error())
+		l.Error("failed to start server: %v", err.Error())
 	}
 }
