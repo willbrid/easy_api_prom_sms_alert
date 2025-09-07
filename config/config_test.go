@@ -2,23 +2,44 @@ package config_test
 
 import (
 	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/utils/file"
 
+	"bytes"
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
 )
 
-var validate *validator.Validate = validator.New(validator.WithRequiredStructEnabled())
+func triggerTest(t *testing.T, yamlConfig []byte, expectations []string, index int) {
+	v := viper.New()
+	v.SetConfigType("yaml")
 
-func TestLoadConfigFileNotFound(t *testing.T) {
+	if err := v.ReadConfig(bytes.NewBuffer([]byte(yamlConfig))); err != nil {
+		t.Fatalf("failed to read config: %v", err)
+	}
+
+	var validate *validator.Validate = validator.New(validator.WithRequiredStructEnabled())
+	_, err := config.LoadConfig(v, validate)
+
+	expected := expectations[index]
+
+	if err == nil {
+		t.Errorf("no error returned, expected:\n%v", expected)
+	}
+
+	if err.Error() != expected {
+		t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
+	}
+}
+
+func TestReadConfigFile_ReturnFileNotFoundError(t *testing.T) {
+	t.Parallel()
+
 	var filename string
 
-	_, err := config.LoadConfig(filename, validate)
-
-	expected := "Config File \"config\" Not Found in \"[]\""
+	_, err := config.ReadConfigFile(filename)
+	expected := "configuration file '' not found"
 
 	if err == nil {
 		t.Fatalf("no error returned, expected:\n%v", expected)
@@ -29,10 +50,12 @@ func TestLoadConfigFileNotFound(t *testing.T) {
 	}
 }
 
-func TestLoadConfigFileNotExist(t *testing.T) {
+func TestReadConfigFile_ReturnFileNotExistError(t *testing.T) {
+	t.Parallel()
+
 	var filename string = "nonexistentfile.yaml"
 
-	_, err := config.LoadConfig(filename, validate)
+	_, err := config.ReadConfigFile(filename)
 
 	expected := "open nonexistentfile.yaml: no such file or directory"
 
@@ -45,26 +68,28 @@ func TestLoadConfigFileNotExist(t *testing.T) {
 	}
 }
 
-func TestUsernameFieldWithAuthEnabled(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadUsernameInputWhenAuthEnabled(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: "x"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
+`),
 	}
 
 	expectations := []string{
@@ -73,45 +98,31 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'Username' for condition 'max'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
 
-func TestPasswordFieldWithAuthEnabled(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadPasswordInputWhenAuthEnabled(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: "xxxxx"
     password: ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
     username: "xxxxx"
     password: xxxxxxx
-`,
+`),
 	}
 
 	expectations := []string{
@@ -119,32 +130,18 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'Password' for condition 'min'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
 
-func TestProviderUrl(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadProviderUrl(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -152,8 +149,8 @@ easy_api_prom_sms_alert:
     password: xxxxxxxx
   provider:
     url: ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -161,8 +158,8 @@ easy_api_prom_sms_alert:
     password: xxxxxxxx
   provider:
     url: "http://"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -171,8 +168,8 @@ easy_api_prom_sms_alert:
   provider:
     url: "http://localhost:5797"
     content_type: ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -181,7 +178,7 @@ easy_api_prom_sms_alert:
   provider:
     url: "http://localhost:5797"
     content_type: "xxxxx"
-`,
+`),
 	}
 
 	expectations := []string{
@@ -191,32 +188,18 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'ContentType' for condition 'oneof'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
 
-func TestProviderAuthField(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadProviderAuthInput(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -226,8 +209,8 @@ easy_api_prom_sms_alert:
     url: "http://localhost:5797"
     authentication:
       enabled: true
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -239,8 +222,8 @@ easy_api_prom_sms_alert:
       enabled: true
       authorization_type: ''
       authorization_credential: ''
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -252,8 +235,8 @@ easy_api_prom_sms_alert:
       enabled: true
       authorization_type: 'xxxxx'
       authorization_credential: ''
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -265,7 +248,7 @@ easy_api_prom_sms_alert:
       enabled: true
       authorization_type: ''
       authorization_credential: 'xxxxxxxxxx'
-`,
+`),
 	}
 
 	expectations := []string{
@@ -275,32 +258,18 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'AuthorizationType' for condition 'required_if'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
 
-func TestProviderParamField(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadProviderParamInput(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -312,8 +281,8 @@ easy_api_prom_sms_alert:
       enabled: true
       authorization_type: "xxxxx"
       authorization_credential: "xxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -326,8 +295,8 @@ easy_api_prom_sms_alert:
       authorization_type: "xxxxx"
       authorization_credential: "xxxxx"
     parameters:
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -342,8 +311,8 @@ easy_api_prom_sms_alert:
     parameters:
       from:
         param_name: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -359,8 +328,8 @@ easy_api_prom_sms_alert:
       from:
         param_name: "xxxxx"
         param_value: ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -377,8 +346,8 @@ easy_api_prom_sms_alert:
         param_name: "xxxxx"
         param_value: "xxxxx"
         param_method: "xxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -397,8 +366,8 @@ easy_api_prom_sms_alert:
         param_value: "xxxxx"
       to:
         param_name: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -418,8 +387,8 @@ easy_api_prom_sms_alert:
       to:
         param_name: "xxxxx"
         param_method: "xxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -442,7 +411,7 @@ easy_api_prom_sms_alert:
         param_value: "xxxxx"
       message:
         param_name: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
+`),
 	}
 
 	expectations := []string{
@@ -456,32 +425,18 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'ParamName' for condition 'max'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
 
-func TestRecipientField(t *testing.T) {
-	configSlices := []string{
-		`---
+func TestLoadConfig_ReturnErrorWithBadRecipientInput(t *testing.T) {
+	t.Parallel()
+
+	configSlices := [][]byte{
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -504,8 +459,8 @@ easy_api_prom_sms_alert:
         param_value: "xxxxx"
       message:
         param_name: "xxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -532,8 +487,8 @@ easy_api_prom_sms_alert:
   - name: ""
     members:
     - "xxxxx"
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -560,8 +515,8 @@ easy_api_prom_sms_alert:
   - name: "admin"
     members:
     - ""
-`,
-		`---
+`),
+		[]byte(`---
 easy_api_prom_sms_alert:
   auth:
     enabled: true
@@ -588,7 +543,7 @@ easy_api_prom_sms_alert:
   - name: "admin"
     members:
     - "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-`,
+`),
 	}
 
 	expectations := []string{
@@ -598,25 +553,9 @@ easy_api_prom_sms_alert:
 		"validation failed on field 'Members[0]' for condition 'max'",
 	}
 
-	for index, configContent := range configSlices {
-		t.Run(fmt.Sprintf("LoadConfig #%v", index), func(subT *testing.T) {
-			filename, err := file.CreateConfigFileForTesting(configContent)
-			if err != nil {
-				t.Fatal(err.Error())
-			}
-			defer os.Remove(filename)
-
-			_, err = config.LoadConfig(filename, validate)
-
-			expected := expectations[index]
-
-			if err == nil {
-				t.Errorf("no error returned, expected:\n%v", expected)
-			}
-
-			if err != nil && err.Error() != expected {
-				t.Errorf("\nexpected:\n%v\ngot:\n%v", expected, err.Error())
-			}
+	for index, yamlConfig := range configSlices {
+		t.Run(fmt.Sprintf("LoadConfig  #%v", index), func(subT *testing.T) {
+			triggerTest(subT, yamlConfig, expectations, index)
 		})
 	}
 }
