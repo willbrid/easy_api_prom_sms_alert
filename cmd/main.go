@@ -29,5 +29,6 @@ func main() {
 
 	l.Info("configuration file '%s' was loaded successfully", configFlag.ConfigFile)
 
-	app.Run(configLoaded, configFlag, l)
+	appInstance := app.NewApp(l)
+	appInstance.Run(configLoaded, configFlag)
 }

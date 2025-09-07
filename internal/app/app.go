@@ -5,12 +5,21 @@ import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/pkg/logger"
 
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag, l *logger.Logger) {
+type App struct {
+	logger *logger.Logger
+}
+
+func NewApp(l *logger.Logger) *App {
+	return &App{logger: l}
+}
+
+func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
 	var err error
 
 	alertSender := alert.NewAlertSender(cfgfile)
@@ -18,16 +27,16 @@ func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag, l *logger.Logger) {
 	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
 	router.Use(alertSender.AuthMiddleware)
 
-	l.Info("server is listening on port %v", cfgflag.ListenPort)
+	app.logger.Info("server is listening on port %v", cfgflag.ListenPort)
 	if cfgflag.EnableHttps {
-		l.Info("server is using https")
-		err = http.ListenAndServeTLS(":"+cfgflag.ListenPort, cfgflag.CertFile, cfgflag.KeyFile, router)
+		app.logger.Info("server is using https")
+		err = http.ListenAndServeTLS(":"+fmt.Sprint(cfgflag.ListenPort), cfgflag.CertFile, cfgflag.KeyFile, router)
 	} else {
-		l.Info("server is using http")
-		err = http.ListenAndServe(":"+cfgflag.ListenPort, router)
+		app.logger.Info("server is using http")
+		err = http.ListenAndServe(":"+fmt.Sprint(cfgflag.ListenPort), router)
 	}
 
 	if err != nil {
-		l.Error("failed to start server: %v", err.Error())
+		app.logger.Error("failed to start server: %v", err.Error())
 	}
 }
