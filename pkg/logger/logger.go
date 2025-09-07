@@ -9,6 +9,13 @@ import (
 	"time"
 )
 
+type LoggerInterface interface {
+	Info(message string, args ...any)
+	Warning(message string, args ...any)
+	Error(message string, args ...any)
+	Fatal(message string, args ...any)
+}
+
 type Logger struct {
 	logger *log.Logger
 }
