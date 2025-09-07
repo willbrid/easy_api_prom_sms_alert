@@ -10,9 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	l := logger.NewLogger()
-
+func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag, l *logger.Logger) {
 	var err error
 
 	alertSender := alert.NewAlertSender(cfgfile)
