@@ -1,8 +1,8 @@
 package app
 
 import (
-	"easy-api-prom-alert-sms/alert"
 	"easy-api-prom-alert-sms/config"
+	"easy-api-prom-alert-sms/internal/handler"
 	"easy-api-prom-alert-sms/pkg/httpserver"
 	"easy-api-prom-alert-sms/pkg/logger"
 
@@ -10,8 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/gorilla/mux"
 )
 
 type App struct {
@@ -23,19 +21,15 @@ func NewApp(l *logger.Logger) *App {
 }
 
 func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	alertSender := alert.NewAlertSender(cfgfile)
-	router := mux.NewRouter()
-	router.HandleFunc("/api-alert", alertSender.AlertHandler).Methods("POST")
-	router.Use(alertSender.AuthMiddleware)
-
 	httpServer := httpserver.NewServer(
-		router,
 		fmt.Sprint(":"+fmt.Sprint(cfgflag.ListenPort)),
 		cfgflag.EnableHttps,
 		cfgflag.CertFile,
 		cfgflag.KeyFile,
 	)
+	handler.NewRouter(httpServer.Router, cfgfile, nil, app.logger)
 	httpServer.Start()
+
 	var logInfoServer string
 	if cfgflag.EnableHttps {
 		logInfoServer = "app server is listening on port %v using https"
