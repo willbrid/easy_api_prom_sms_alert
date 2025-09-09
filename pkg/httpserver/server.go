@@ -4,12 +4,15 @@ import (
 	"context"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 const _defaultShutdownTimeout time.Duration = 5 * time.Second
 
 type Server struct {
 	instance        *http.Server
+	Router          *mux.Router
 	notify          chan error
 	isHttps         bool
 	certFile        string
@@ -17,7 +20,8 @@ type Server struct {
 	shutdownTimeout time.Duration
 }
 
-func NewServer(router http.Handler, address string, isHttps bool, certFile, keyFile string) *Server {
+func NewServer(address string, isHttps bool, certFile, keyFile string) *Server {
+	router := mux.NewRouter()
 	server := &http.Server{
 		Addr:    address,
 		Handler: router,
@@ -25,6 +29,7 @@ func NewServer(router http.Handler, address string, isHttps bool, certFile, keyF
 
 	return &Server{
 		instance:        server,
+		Router:          router,
 		notify:          make(chan error, 1),
 		isHttps:         isHttps,
 		certFile:        certFile,
