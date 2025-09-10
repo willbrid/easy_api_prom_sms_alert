@@ -27,6 +27,7 @@ func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
 		ams.NewAlertMicroservice(cfgfile.EasyAPIPromAlertSMS.Provider),
 		cfgfile.EasyAPIPromAlertSMS.Recipients,
 		cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
+		cfgfile.EasyAPIPromAlertSMS.Simulation,
 	)
 
 	httpServer := httpserver.NewServer(
