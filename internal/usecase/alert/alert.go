@@ -4,8 +4,9 @@ import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/internal/entity"
 	"easy-api-prom-alert-sms/internal/microservice"
+	"easy-api-prom-alert-sms/pkg/alerthelper"
 	"easy-api-prom-alert-sms/pkg/logger"
-	"easy-api-prom-alert-sms/pkg/util"
+	"easy-api-prom-alert-sms/pkg/recipienthelper"
 )
 
 type AlertUseCase struct {
@@ -21,9 +22,9 @@ func NewAlertUseCase(iMsc microservice.IMicroservice, recipients []config.Recipi
 
 func (auc *AlertUseCase) Send(alertData entity.Alert, l logger.ILogger) error {
 	for _, alert := range alertData.Data.Alerts {
-		alertMsg := util.GetMsgFromAlert(alert)
-		recipientName := util.GetRecipientFromAlert(alert, auc.defaultRecipientName)
-		members := util.GetRecipientMembers(auc.recipients, recipientName)
+		alertMsg := alerthelper.GetMsgFromAlert(alert)
+		recipientName := alerthelper.GetRecipientFromAlert(alert, auc.defaultRecipientName)
+		members := recipienthelper.GetRecipientMembers(auc.recipients, recipientName)
 
 		for _, member := range members {
 			url, body, err := auc.iMsc.GetUrlAndBody(member, alertMsg)
