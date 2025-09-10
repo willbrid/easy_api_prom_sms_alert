@@ -35,7 +35,7 @@ func (c *Handler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	go func() {
-		if err := c.iAlert.Send(entity.Alert{Data: &alertData}); err != nil {
+		if err := c.iAlert.Send(entity.Alert{Data: &alertData}, c.iLogger); err != nil {
 			c.iLogger.Error("failed to send alert : %s", err.Error())
 		}
 	}()
