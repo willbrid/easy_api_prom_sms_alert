@@ -2,7 +2,8 @@ package handler
 
 import (
 	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/internal/middleware"
+	"easy-api-prom-alert-sms/internal/handler/httphandler"
+	"easy-api-prom-alert-sms/internal/handler/middleware"
 	"easy-api-prom-alert-sms/internal/usecase"
 	"easy-api-prom-alert-sms/pkg/logger"
 
@@ -12,7 +13,7 @@ import (
 )
 
 func NewRouter(router *mux.Router, cfg *config.Config, a usecase.IAlert, l logger.ILogger) {
-	handler := NewHandler(a, l)
+	handler := httphandler.NewHandler(a, l)
 
 	router.Use(func(h http.Handler) http.Handler {
 		return middleware.AuthMiddleware(h, cfg)
