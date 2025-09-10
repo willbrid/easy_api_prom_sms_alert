@@ -15,7 +15,9 @@ changelog:
 release:
   prerelease: auto
 builds:
-  - env: 
+  - id: easy_api_prom_sms_alert
+    dir: cmd
+    env:
     - CGO_ENABLED=0
     - GO111MODULE=on
     goos:
