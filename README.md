@@ -1,6 +1,6 @@
 # Easy_api_prom_sms_alert
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE) [![Build and Release](https://github.com/willbrid/easy_api_prom_sms_alert/actions/workflows/cicd.yml/badge.svg)](https://github.com/willbrid/easy_api_prom_sms_alert/actions/workflows/cicd.yml)
 
 **Easy_api_prom_sms_alert** est un webhook pour prometheus permettant d'envoyer des alertes sms avec n'importe quel fournisseur de sms exposant une api.
 
