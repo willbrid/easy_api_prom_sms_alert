@@ -1,7 +1,7 @@
 package config
 
 import (
-	"easy-api-prom-alert-sms/utils/httpclient"
+	"easy-api-prom-alert-sms/pkg/httpclientparam"
 
 	"fmt"
 	"time"
@@ -70,13 +70,13 @@ func setConfigDefaults(v *viper.Viper) {
 	v.SetDefault("easy_api_prom_sms_alert.provider.authentication.authorization_credential", "")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_name", "from")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_value", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", httpclient.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.from.param_method", httpclientparam.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_name", "to")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_value", "")
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", httpclient.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.to.param_method", httpclientparam.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_name", "content")
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_value", AlertMessageTemplate)
-	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", httpclient.PostMethod)
+	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.message.param_method", httpclientparam.PostMethod)
 	v.SetDefault("easy_api_prom_sms_alert.provider.parameters.extra_params", make([]Parameter, 0))
 	v.SetDefault("easy_api_prom_sms_alert.provider.timeout", "10s")
 	v.SetDefault("easy_api_prom_sms_alert.recipients", make([]Recipient, 0))
