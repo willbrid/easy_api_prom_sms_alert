@@ -12,7 +12,7 @@ import (
 )
 
 func NewRouter(router *mux.Router, cfg *config.Config, a usecase.IAlert, l logger.ILogger) {
-	handler := newHandler(a, l)
+	handler := NewHandler(a, l)
 
 	router.Use(func(h http.Handler) http.Handler {
 		return middleware.AuthMiddleware(h, cfg)

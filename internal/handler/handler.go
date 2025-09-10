@@ -16,7 +16,7 @@ type Handler struct {
 	iLogger logger.ILogger
 }
 
-func newHandler(a usecase.IAlert, l logger.ILogger) *Handler {
+func NewHandler(a usecase.IAlert, l logger.ILogger) *Handler {
 	return &Handler{a, l}
 }
 
