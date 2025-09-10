@@ -2,6 +2,7 @@ package alert
 
 import (
 	"easy-api-prom-alert-sms/config"
+	"easy-api-prom-alert-sms/pkg/httpclient"
 	"easy-api-prom-alert-sms/pkg/httpclientparam"
 
 	"fmt"
@@ -17,6 +18,25 @@ func NewAlertMicroservice(provider config.Provider) *AlertMicroservice {
 }
 
 func (ams *AlertMicroservice) Consume(url string, body string) error {
+	provider := ams.Provider
+	var headers map[string]string = map[string]string{
+		"Content-Type": provider.ContentType,
+	}
+
+	if provider.Authentication.Enabled {
+		headers["Authorization"] = fmt.Sprintf("%s %s", provider.Authentication.AuthorizationType, provider.Authentication.AuthorizationCredential)
+	}
+
+	_, err := httpclient.Post(url, strings.NewReader(body), httpclient.Options{
+		Headers:            headers,
+		Timeout:            provider.Timeout,
+		InsecureSkipVerify: provider.InsecureSkipVerify,
+	})
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
