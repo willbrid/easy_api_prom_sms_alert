@@ -1,4 +1,4 @@
-FROM golang:1.21 AS builder
+FROM golang:1.24 AS builder
 
 WORKDIR /build
 
@@ -6,7 +6,7 @@ COPY . .
 
 RUN go mod download
 
-RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -o easy-api-prom-sms-alert .
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -o easy-api-prom-sms-alert ./cmd
 
 FROM alpine:3.20
 
