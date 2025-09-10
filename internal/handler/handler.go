@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/internal/entity"
 	"easy-api-prom-alert-sms/internal/usecase"
 	"easy-api-prom-alert-sms/pkg/logger"
@@ -13,13 +12,12 @@ import (
 )
 
 type Handler struct {
-	cfg     *config.Config
 	iAlert  usecase.IAlert
 	iLogger logger.ILogger
 }
 
-func newHandler(c *config.Config, a usecase.IAlert, l logger.ILogger) *Handler {
-	return &Handler{c, a, l}
+func newHandler(a usecase.IAlert, l logger.ILogger) *Handler {
+	return &Handler{a, l}
 }
 
 func (c *Handler) HandleHealthCheck(resp http.ResponseWriter, req *http.Request) {
@@ -37,7 +35,7 @@ func (c *Handler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	go func() {
-		if err := c.iAlert.Send(entity.Alert{Data: &alertData}, c.cfg); err != nil {
+		if err := c.iAlert.Send(entity.Alert{Data: &alertData}); err != nil {
 			c.iLogger.Error("failed to send alert : %s", err.Error())
 		}
 	}()
