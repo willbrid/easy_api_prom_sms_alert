@@ -3,8 +3,8 @@ package app
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/internal/handler"
-	amsc "easy-api-prom-alert-sms/internal/microservice/alert"
-	"easy-api-prom-alert-sms/internal/usecase/alert"
+	ams "easy-api-prom-alert-sms/internal/microservice/alert"
+	auc "easy-api-prom-alert-sms/internal/usecase/alert"
 	"easy-api-prom-alert-sms/pkg/httpserver"
 	"easy-api-prom-alert-sms/pkg/logger"
 
@@ -23,8 +23,8 @@ func NewApp(l *logger.Logger) *App {
 }
 
 func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	alertUserCase := alert.NewAlertUseCase(
-		amsc.NewAlertMicroservice(cfgfile.EasyAPIPromAlertSMS.Provider),
+	alertUserCase := auc.NewAlertUseCase(
+		ams.NewAlertMicroservice(cfgfile.EasyAPIPromAlertSMS.Provider),
 		cfgfile.EasyAPIPromAlertSMS.Recipients,
 		cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
 	)
