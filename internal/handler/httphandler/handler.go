@@ -1,4 +1,4 @@
-package handler
+package httphandler
 
 import (
 	"easy-api-prom-alert-sms/internal/entity"
