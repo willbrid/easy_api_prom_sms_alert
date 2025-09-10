@@ -3,6 +3,8 @@ package app
 import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/internal/handler"
+	amsc "easy-api-prom-alert-sms/internal/microservice/alert"
+	"easy-api-prom-alert-sms/internal/usecase/alert"
 	"easy-api-prom-alert-sms/pkg/httpserver"
 	"easy-api-prom-alert-sms/pkg/logger"
 
@@ -21,13 +23,19 @@ func NewApp(l *logger.Logger) *App {
 }
 
 func (app *App) Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
+	alertUserCase := alert.NewAlertUseCase(
+		amsc.NewAlertMicroservice(cfgfile.EasyAPIPromAlertSMS.Provider),
+		cfgfile.EasyAPIPromAlertSMS.Recipients,
+		cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
+	)
+
 	httpServer := httpserver.NewServer(
 		fmt.Sprint(":"+fmt.Sprint(cfgflag.ListenPort)),
 		cfgflag.EnableHttps,
 		cfgflag.CertFile,
 		cfgflag.KeyFile,
 	)
-	handler.NewRouter(httpServer.Router, cfgfile, nil, app.logger)
+	handler.NewRouter(httpServer.Router, cfgfile, alertUserCase, app.logger)
 	httpServer.Start()
 
 	var logInfoServer string
