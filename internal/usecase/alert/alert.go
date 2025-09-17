@@ -4,9 +4,9 @@ import (
 	"easy-api-prom-alert-sms/config"
 	"easy-api-prom-alert-sms/internal/entity"
 	"easy-api-prom-alert-sms/internal/microservice"
-	"easy-api-prom-alert-sms/pkg/alerthelper"
+	"easy-api-prom-alert-sms/internal/pkg/alerthelper"
+	"easy-api-prom-alert-sms/internal/pkg/recipienthelper"
 	"easy-api-prom-alert-sms/pkg/logger"
-	"easy-api-prom-alert-sms/pkg/recipienthelper"
 )
 
 type AlertUseCase struct {
