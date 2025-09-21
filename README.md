@@ -4,21 +4,21 @@
 
 **Easy_api_prom_sms_alert** est un webhook pour prometheus permettant d'envoyer des alertes sms avec n'importe quel fournisseur de sms exposant une api.
 
-## Problème
+### Problème
 
 Lorsque **Prometheus** détecte des conditions anormales dans les systèmes surveillés, il déclenche des alertes pour informer **alertmanager** d'effectuer des notifications SMS. Cependant il existe plusieurs types de fournisseur de SMS avec leur propre spécification. Ainsi intégrer quelques uns dans alertmanager, rendrait la configuration complexe à gérer. 
 
-## Solution
+### Solution
 
 Avec **Easy_api_prom_sms_alert**, les utilisateurs auront la possibilité de choisir n'importe quel fournisseur de services SMS qui expose une API en **HTTP POST**. Cela leur donnera la liberté de sélectionner le fournisseur qui répond au mieux à leurs besoins en termes de coût, de fiabilité et de couverture géographique.
 
-## Documentation
+### Documentation
 
 1- [Installation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/installation.md) <br>
-2- [Utilisation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/utilisation.md) <br>
-3- [Fichier de configuration](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/configuration.md) <br>
+2- [Configuration](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/configuration.md) <br>
+3- [Utilisation](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/utilisation.md) <br>
 4- [Exemple complet](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/docs/exemple.md)
 
-## Licence
+### Licence
 
 Ce projet est sous licence MIT - voir le fichier [LICENSE](https://github.com/willbrid/easy_api_prom_sms_alert/blob/main/LICENSE) pour plus de détails.
