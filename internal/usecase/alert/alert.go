@@ -1,8 +1,7 @@
 package alert
 
 import (
-	"easy-api-prom-alert-sms/config"
-	"easy-api-prom-alert-sms/internal/entity"
+	"easy-api-prom-alert-sms/internal/domain"
 	"easy-api-prom-alert-sms/internal/microservice"
 	"easy-api-prom-alert-sms/internal/pkg/alerthelper"
 	"easy-api-prom-alert-sms/internal/pkg/recipienthelper"
@@ -10,21 +9,22 @@ import (
 )
 
 type AlertUseCase struct {
-	iMsc                 microservice.IMicroservice
-	recipients           []config.Recipient
-	defaultRecipientName string
-	simulation           bool
+	iMsc        microservice.IAlertMicroservice
+	alertConfig *domain.AlertConfig
 }
 
-func NewAlertUseCase(iMsc microservice.IMicroservice, recipients []config.Recipient, defaultRecipientName string, simulation bool) *AlertUseCase {
-	return &AlertUseCase{iMsc, recipients, defaultRecipientName, simulation}
+func NewAlertUseCase(iMsc microservice.IAlertMicroservice, alertConfig *domain.AlertConfig) *AlertUseCase {
+	return &AlertUseCase{iMsc, alertConfig}
 }
 
-func (auc *AlertUseCase) Send(alertData entity.Alert) error {
+func (auc *AlertUseCase) Send(alertData domain.Alert) error {
+	recipients := auc.alertConfig.Recipients
+	defaultRecipientName := auc.alertConfig.DefaultRecipientName
+
 	for _, alert := range alertData.Data.Alerts {
 		alertMsg := alerthelper.GetMsgFromAlert(alert)
-		recipientName := alerthelper.GetRecipientFromAlert(alert, auc.defaultRecipientName)
-		members := recipienthelper.GetRecipientMembers(auc.recipients, recipientName)
+		recipientName := alerthelper.GetRecipientFromAlert(alert, defaultRecipientName)
+		members := recipienthelper.GetRecipientMembers(recipients, recipientName)
 
 		for _, member := range members {
 			url, body, err := auc.iMsc.GetUrlAndBody(member, alertMsg)
@@ -33,7 +33,7 @@ func (auc *AlertUseCase) Send(alertData entity.Alert) error {
 				return err
 			}
 
-			if auc.simulation {
+			if auc.alertConfig.Simulation {
 				logger.Info("send request with url %s and body %s", url, body)
 			} else {
 				if err := auc.iMsc.Consume(url, body); err != nil {
