@@ -1,8 +1,7 @@
 package httphandler
 
 import (
-	"easy-api-prom-alert-sms/internal/entity"
-	"easy-api-prom-alert-sms/internal/usecase"
+	"easy-api-prom-alert-sms/internal/domain"
 	"easy-api-prom-alert-sms/pkg/logger"
 
 	"encoding/json"
@@ -11,20 +10,12 @@ import (
 	"github.com/prometheus/alertmanager/template"
 )
 
-type Handler struct {
-	iAlert usecase.IAlert
-}
-
-func NewHandler(a usecase.IAlert) *Handler {
-	return &Handler{a}
-}
-
-func (c *Handler) HandleHealthCheck(resp http.ResponseWriter, req *http.Request) {
+func (h *HTTPHandler) HandleHealthCheck(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Content-Type", "application/json")
 	resp.WriteHeader(http.StatusNoContent)
 }
 
-func (c *Handler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
+func (h *HTTPHandler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
 	var alertData template.Data
 
 	if err := json.NewDecoder(req.Body).Decode(&alertData); err != nil {
@@ -34,7 +25,7 @@ func (c *Handler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	go func() {
-		if err := c.iAlert.Send(entity.Alert{Data: &alertData}); err != nil {
+		if err := h.Usecases.IAlertUsecase.Send(domain.Alert{Data: &alertData}); err != nil {
 			logger.Error("failed to send alert : %s", err.Error())
 		}
 	}()
