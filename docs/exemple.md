@@ -2,14 +2,14 @@
 
 ### Mise en place d'une sandbox
 
-Nous mettrons en place un serveur vagrant **Rocky linux 8** sous une machine hôte Ubuntu 20.04 (ou >= 20.04) avec les outils **virtualbox7** et **vagrant** déjà installés.
+Nous mettrons en place un serveur vagrant **Rocky linux 9** sous une machine hôte Ubuntu 20.04 (ou >= 20.04) avec les outils **virtualbox7** et **vagrant** déjà installés.
 
 ```
 mkdir $HOME/easy_api_prom_sms_alert && cd $HOME/easy_api_prom_sms_alert
 ```
 
 ```
-wget https://download.virtualbox.org/virtualbox/7.0.12/VBoxGuestAdditions_7.0.12.iso
+wget https://download.virtualbox.org/virtualbox/7.0.24/VBoxGuestAdditions_7.0.24.iso
 ```
 
 ```
@@ -25,7 +25,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vbguest.auto_update = false
   config.vbguest.no_remote = true
-  config.vbguest.iso_path = "./VBoxGuestAdditions_7.0.12.iso"
+  config.vbguest.iso_path = "./VBoxGuestAdditions_7.0.24.iso"
 
   # General Vagrant VM configuration
   config.ssh.insert_key = false
@@ -38,8 +38,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Monitoring Server
   config.vm.define "monitoring-server" do |srv|
-    srv.vm.box = "willbrid/rockylinux8"
-    srv.vm.box_version = "0.0.2"
+    srv.vm.box = "rockylinux/9"
+    srv.vm.box_version = "6.0.0"
     srv.vm.hostname = "monitoring-server"
     srv.vm.network :private_network, ip: "192.168.56.211"
   end
@@ -200,6 +200,7 @@ vi $HOME/monitoring/alert/config.yaml
 ```
 
 **Intégration avec Twilio**
+
 ```
 easy_api_prom_sms_alert:
   simulation: false
@@ -241,6 +242,7 @@ easy_api_prom_sms_alert:
 **Référence** : [Twilio Documentation](https://www.twilio.com/en-us/blog/send-sms-twilio-shell-script-curl)
 
 **Intégration avec WhatsApp**
+
 ```
 easy_api_prom_sms_alert:
   simulation: false
