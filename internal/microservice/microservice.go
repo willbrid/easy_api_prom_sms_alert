@@ -10,12 +10,12 @@ type IAlertMicroservice interface {
 	GetUrlAndBody(dest string, message string) (string, string, error)
 }
 
-type Microservice struct {
+type Microservices struct {
 	IAlertMicroservice IAlertMicroservice
 }
 
-func NewMicroservice(provider *config.Provider) *Microservice {
-	return &Microservice{
+func NewMicroservices(provider *config.Provider) *Microservices {
+	return &Microservices{
 		IAlertMicroservice: alert.NewAlertMicroservice(provider),
 	}
 }

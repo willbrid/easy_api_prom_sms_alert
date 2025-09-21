@@ -15,12 +15,12 @@ type Usecases struct {
 }
 
 type Deps struct {
-	Microservice *microservice.Microservice
-	AlertConfig  *domain.AlertConfig
+	Microservices *microservice.Microservices
+	AlertConfig   *domain.AlertConfig
 }
 
 func NewUsecases(deps *Deps) *Usecases {
 	return &Usecases{
-		IAlertUsecase: alert.NewAlertUseCase(deps.Microservice.IAlertMicroservice, deps.AlertConfig),
+		IAlertUsecase: alert.NewAlertUseCase(deps.Microservices.IAlertMicroservice, deps.AlertConfig),
 	}
 }

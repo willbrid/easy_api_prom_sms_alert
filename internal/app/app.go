@@ -16,9 +16,9 @@ import (
 )
 
 func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	microservice := microservice.NewMicroservice(&cfgfile.EasyAPIPromAlertSMS.Provider)
+	microservice := microservice.NewMicroservices(&cfgfile.EasyAPIPromAlertSMS.Provider)
 	usecases := usecase.NewUsecases(&usecase.Deps{
-		Microservice: microservice,
+		Microservices: microservice,
 		AlertConfig: &domain.AlertConfig{
 			Recipients:           cfgfile.EasyAPIPromAlertSMS.Recipients,
 			DefaultRecipientName: cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
