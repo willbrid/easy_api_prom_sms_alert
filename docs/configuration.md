@@ -6,11 +6,11 @@
 
 |Option          |Obligatoire|Description|
 |----------------|-----------|-----------|
-`--config-file`      |oui|option permettant de préciser l'emplacement du fichier de configuration
-`--port`             |non|option permettant de préciser le port (par défaut : `5957`)
-`--enable-https`     |non|option permettant d'activer ou désactiver la communication tls (par défaut : `false`)
-`--cert-file`        |non|option permettant de préciser l'emplacement du fichier de certificat (obligatoire si l'option `--enable-https` est à `true`)
-`--key-file`         |non|option permettant de préciser l'emplacement du fichier de clé privée (obligatoire si l'option `--enable-https` est à `true`)
+`--config-file       `|oui|option permettant de préciser l'emplacement du fichier de configuration
+`--port`|non|option permettant de préciser le port (par défaut : `5957`)
+`--enable-https      `|non|option permettant d'activer ou désactiver la communication tls (par défaut : `false`)
+`--cert-file`|non|option permettant de préciser l'emplacement du fichier de certificat (obligatoire si l'option `--enable-https` est à `true`)
+`--key-file`|non|option permettant de préciser l'emplacement du fichier de clé privée (obligatoire si l'option `--enable-https` est à `true`)
 
 - **Mode conteneur**
 
