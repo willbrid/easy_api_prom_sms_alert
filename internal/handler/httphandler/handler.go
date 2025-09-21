@@ -12,12 +12,11 @@ import (
 )
 
 type Handler struct {
-	iAlert  usecase.IAlert
-	iLogger logger.ILogger
+	iAlert usecase.IAlert
 }
 
-func NewHandler(a usecase.IAlert, l logger.ILogger) *Handler {
-	return &Handler{a, l}
+func NewHandler(a usecase.IAlert) *Handler {
+	return &Handler{a}
 }
 
 func (c *Handler) HandleHealthCheck(resp http.ResponseWriter, req *http.Request) {
@@ -29,14 +28,14 @@ func (c *Handler) HandleAlert(resp http.ResponseWriter, req *http.Request) {
 	var alertData template.Data
 
 	if err := json.NewDecoder(req.Body).Decode(&alertData); err != nil {
-		c.iLogger.Error("failed to parse content : %s", err.Error())
+		logger.Error("failed to parse content : %s", err.Error())
 		http.Error(resp, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	go func() {
-		if err := c.iAlert.Send(entity.Alert{Data: &alertData}, c.iLogger); err != nil {
-			c.iLogger.Error("failed to send alert : %s", err.Error())
+		if err := c.iAlert.Send(entity.Alert{Data: &alertData}); err != nil {
+			logger.Error("failed to send alert : %s", err.Error())
 		}
 	}()
 

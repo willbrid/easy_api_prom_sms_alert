@@ -5,15 +5,14 @@ import (
 	"easy-api-prom-alert-sms/internal/handler/httphandler"
 	"easy-api-prom-alert-sms/internal/handler/middleware"
 	"easy-api-prom-alert-sms/internal/usecase"
-	"easy-api-prom-alert-sms/pkg/logger"
 
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func NewRouter(router *mux.Router, cfg *config.Config, a usecase.IAlert, l logger.ILogger) {
-	handler := httphandler.NewHandler(a, l)
+func NewRouter(router *mux.Router, cfg *config.Config, a usecase.IAlert) {
+	handler := httphandler.NewHandler(a)
 
 	router.Use(func(h http.Handler) http.Handler {
 		return middleware.AuthMiddleware(h, cfg)
