@@ -4,8 +4,8 @@
 
 - **Mode binaire**
 
-|Option|Obligatoire|Description|
-|------|-----------|-----------|
+|Option          |Obligatoire|Description|
+|----------------|-----------|-----------|
 `--config-file`|oui|option permettant de préciser l'emplacement du fichier de configuration
 `--port`|non|option permettant de préciser le port (par défaut : `5957`)
 `--enable-https`|non|option permettant d'activer ou désactiver la communication tls (par défaut : `false`)
