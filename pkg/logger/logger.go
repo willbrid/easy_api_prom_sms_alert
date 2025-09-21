@@ -9,42 +9,25 @@ import (
 	"time"
 )
 
-type ILogger interface {
-	Info(message string, args ...any)
-	Warning(message string, args ...any)
-	Error(message string, args ...any)
-	Fatal(message string, args ...any)
-}
-
-type Logger struct {
-	logger *log.Logger
-}
-
 type LogLevel int
 
 const (
-	Info LogLevel = iota
-	Warning
-	Error
-	Fatal
+	INFO LogLevel = iota
+	WARNING
+	ERROR
+	FATAL
 )
 
 const DefaultCallerDepth = 2
 
 var logLevels = map[LogLevel]string{
-	Info:    "INFO",
-	Warning: "WARNING",
-	Error:   "ERROR",
-	Fatal:   "FATAL",
+	INFO:    "INFO",
+	WARNING: "WARNING",
+	ERROR:   "ERROR",
+	FATAL:   "FATAL",
 }
 
-func NewLogger() *Logger {
-	logger := log.New(os.Stdout, "", 0)
-
-	return &Logger{logger: logger}
-}
-
-func (l *Logger) msg(level LogLevel, message string, args ...any) {
+func msg(level LogLevel, message string, args ...any) {
 	logLevel, ok := logLevels[level]
 	if !ok {
 		logLevel = "UNKNOWN"
@@ -62,20 +45,20 @@ func (l *Logger) msg(level LogLevel, message string, args ...any) {
 	log.Printf("[%s][%s][%s:%d] : %s", datetime, logLevel, filename, line, fmt.Sprintf(message, args...))
 }
 
-func (l *Logger) Info(message string, args ...any) {
-	l.msg(Info, message, args...)
+func Info(message string, args ...any) {
+	msg(INFO, message, args...)
 }
 
-func (l *Logger) Warning(message string, args ...any) {
-	l.msg(Warning, message, args...)
+func Warning(message string, args ...any) {
+	msg(WARNING, message, args...)
 }
 
-func (l *Logger) Error(message string, args ...any) {
-	l.msg(Error, message, args...)
+func Error(message string, args ...any) {
+	msg(ERROR, message, args...)
 }
 
-func (l *Logger) Fatal(message string, args ...any) {
-	l.msg(Fatal, message, args...)
+func Fatal(message string, args ...any) {
+	msg(FATAL, message, args...)
 
 	os.Exit(1)
 }
