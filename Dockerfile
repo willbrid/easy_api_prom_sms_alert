@@ -1,4 +1,4 @@
-FROM golang:1.24 AS builder
+FROM golang:1.24.7-alpine3.22 AS builder
 
 WORKDIR /build
 
@@ -8,7 +8,7 @@ RUN go mod download
 
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -o easy-api-prom-sms-alert ./cmd
 
-FROM alpine:3.20
+FROM alpine:3.22
 
 COPY --from=builder /build/easy-api-prom-sms-alert /usr/local/bin
 COPY --from=builder /build/entrypoint.sh /usr/local/bin
@@ -22,8 +22,11 @@ COPY --from=builder --chown=nobody /build/fixtures/tls/server.key /etc/easy-api-
 
 RUN apk update && apk add --no-cache ca-certificates
 
+ENV EASY_API_PROM_SMS_ALERT_CONFIG_FILE="/etc/easy-api-prom-sms-alert/config.yaml"
 ENV EASY_API_PROM_SMS_ALERT_PORT=5957
 ENV EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS="true"
+ENV EASY_API_PROM_SMS_ALERT_CERT_FILE="/etc/easy-api-prom-sms-alert/tls/server.crt"
+ENV EASY_API_PROM_SMS_ALERT_KEY_FILE="/etc/easy-api-prom-sms-alert/tls/server.key"
 
 USER nobody
 EXPOSE $EASY_API_PROM_SMS_ALERT_PORT
