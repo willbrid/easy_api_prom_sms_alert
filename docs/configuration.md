@@ -1,4 +1,28 @@
-# Fichier de configuration
+# Configuration
+
+### Options de configuration
+
+- **Mode binaire**
+
+|Option|Obligatoire|Description|
+|------|-----------|-----------|
+`--config-file`|oui|option permettant de préciser l'emplacement du fichier de configuration
+`--port`|non|option permettant de préciser le port (par défaut : `5957`)
+`--enable-https`|non|option permettant d'activer ou désactiver la communication tls (par défaut : `false`)
+`--cert-file`|non|option permettant de préciser l'emplacement du fichier de certificat (obligatoire si l'option `--enable-https` est à `true`)
+`--key-file`|non|option permettant de préciser l'emplacement du fichier de clé privée (obligatoire si l'option `--enable-https` est à `true`)
+
+- **Mode conteneur**
+
+|Variable d'environnement|Obligatoire|Description|
+|------------------------|-----------|-----------|
+`EASY_API_PROM_SMS_ALERT_CONFIG_FILE`|non|variable permettant de préciser l'emplacement du fichier de configuration dans le conteneur (par défaut: `/etc/easy-api-prom-sms-alert/config.yaml`). Il peut être écrasé avec un fichier externe si celui-ci est monté en volume avec le même nom et au même emplacement.
+`EASY_API_PROM_SMS_ALERT_PORT`|non|variable permettant de préciser le port (par défaut : `5957`)
+`EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS`|non|variable permettant d'activer ou désactiver la communication tls (par défaut : `true`)
+`EASY_API_PROM_SMS_ALERT_CERT_FILE`|non|variable permettant de préciser l'emplacement du fichier de certificat (obligatoire si la variable `EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS` est à `true`, par défaut : `/etc/easy-api-prom-sms-alert/tls/server.crt`)
+`EASY_API_PROM_SMS_ALERT_KEY_FILE`|non|variable permettant de préciser l'emplacement du fichier de clé privée (obligatoire si la variable `EASY_API_PROM_SMS_ALERT_ENABLE_HTTPS` est à `true`, par défaut : `/etc/easy-api-prom-sms-alert/tls/server.key`)
+
+### Fichier de configuration
 
 ```
 # Documentation sur le fichier de configuration
