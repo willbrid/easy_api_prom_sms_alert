@@ -2,9 +2,10 @@ package app
 
 import (
 	"easy-api-prom-alert-sms/config"
+	"easy-api-prom-alert-sms/internal/domain"
 	"easy-api-prom-alert-sms/internal/handler"
-	ams "easy-api-prom-alert-sms/internal/microservice/alert"
-	auc "easy-api-prom-alert-sms/internal/usecase/alert"
+	"easy-api-prom-alert-sms/internal/microservice"
+	"easy-api-prom-alert-sms/internal/usecase"
 	"easy-api-prom-alert-sms/pkg/httpserver"
 	"easy-api-prom-alert-sms/pkg/logger"
 
@@ -15,12 +16,15 @@ import (
 )
 
 func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
-	alertUserCase := auc.NewAlertUseCase(
-		ams.NewAlertMicroservice(cfgfile.EasyAPIPromAlertSMS.Provider),
-		cfgfile.EasyAPIPromAlertSMS.Recipients,
-		cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
-		cfgfile.EasyAPIPromAlertSMS.Simulation,
-	)
+	microservice := microservice.NewMicroservice(&cfgfile.EasyAPIPromAlertSMS.Provider)
+	usecases := usecase.NewUsecases(&usecase.Deps{
+		Microservice: microservice,
+		AlertConfig: &domain.AlertConfig{
+			Recipients:           cfgfile.EasyAPIPromAlertSMS.Recipients,
+			DefaultRecipientName: cfgfile.EasyAPIPromAlertSMS.Provider.Parameters.To.ParamValue,
+			Simulation:           cfgfile.EasyAPIPromAlertSMS.Simulation,
+		},
+	})
 
 	httpServer := httpserver.NewServer(
 		fmt.Sprint(":"+fmt.Sprint(cfgflag.ListenPort)),
@@ -28,16 +32,12 @@ func Run(cfgfile *config.Config, cfgflag *config.ConfigFlag) {
 		cfgflag.CertFile,
 		cfgflag.KeyFile,
 	)
-	handler.NewRouter(httpServer.Router, cfgfile, alertUserCase)
+	handlerInstance := handler.NewHandler(usecases, httpServer.Router)
+	handlerInstance.InitRouter(cfgfile)
 	httpServer.Start()
 
-	var logInfoServer string
-	if cfgflag.EnableHttps {
-		logInfoServer = "app server is listening on port %v using https"
-	} else {
-		logInfoServer = "app server is listening on port %v using http"
-	}
-	logger.Info(logInfoServer, cfgflag.ListenPort)
+	scheme := map[bool]string{true: "https", false: "http"}[cfgflag.EnableHttps]
+	logger.Info("app server is listening on port %v using %s", cfgflag.ListenPort, scheme)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
