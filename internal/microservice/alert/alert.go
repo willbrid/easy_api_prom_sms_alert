@@ -10,10 +10,10 @@ import (
 )
 
 type AlertMicroservice struct {
-	Provider config.Provider
+	Provider *config.Provider
 }
 
-func NewAlertMicroservice(provider config.Provider) *AlertMicroservice {
+func NewAlertMicroservice(provider *config.Provider) *AlertMicroservice {
 	return &AlertMicroservice{Provider: provider}
 }
 
